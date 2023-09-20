@@ -1,0 +1,175 @@
+.dnd5e.sheet.item .item-card input[type="text"], .dnd5e.sheet.item .item-card input[type="number"], .dnd5e.sheet.item .item-card select {
+    height: 24px;
+    border: 1px solid #7a7971;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+#card-popout {
+    z-index: 99;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    min-width: 250px;
+    min-height: 250px;
+    perspective: 500px;
+    transition: opacity 0.2s ease;
+    opacity: 0;
+}
+
+#card-popout header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.75rem 1rem;
+    position: absolute;
+    width: 100%;
+    gap: 0.5rem;
+    color: white;
+}
+
+#card-popout .flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+#card-popout.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+#card-popout .flip-card-front, #card-popout .flip-card-back {
+    position: absolute;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    display: flex;
+}
+
+#card-popout .flip-card-front img, #card-popout .flip-card-back img {
+    border: none;
+    box-shadow: 0 0 20px var(--color-shadow-dark);
+}
+
+#card-popout .flip-card-back {
+    transform: rotateY(180deg);
+}
+
+#card-popout .card {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: relative;
+    font-family: 'Noto Sans', 'Myriad Pro', Calibri, Helvetica, Arial, sans-serif;
+    font-size: 9pt;
+    overflow: hidden;
+    border: 2mm solid;
+    text-align: left;
+    z-index: -1;
+}
+
+#card-popout .card-title {
+    height: 8mm;
+    padding-left: 2mm;
+    font-family: Lora, 'Calisto MT', 'Bookman Old Style', Bookman, 'Goudy Old Style', Garamond, 'Hoefler Text', 'Bitstream Charter', Georgia, serif;
+    font-variant: small-caps;
+    font-weight: bold;
+    background-color: inherit;
+    color: white;
+    font-size: 13pt;
+    line-height: 7mm;
+}
+
+#card-popout .card-header {
+    display: flex;
+}
+
+#card-popout .card-subtitle {
+    margin-bottom: 0em;
+    line-height: 18px;
+    font-family: 'Noto Sans', 'Myriad Pro', Calibri, Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    font-style: italic;
+}
+
+#card-popout .card-ruler {
+    width: 100%;
+    height: 1mm;
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
+}
+
+#card-popout .card-property-line {
+    text-indent: -1em;
+    margin-left: 1em;
+    color: black;
+}
+
+#card-popout .card h4 {
+    font-weight: bold;
+}
+
+#card-popout .card-property-name {
+    display: inline;
+    font-size: inherit;
+}
+
+#card-popout .card-property-text {
+    display: inline;
+}
+
+#card-popout .card-description-name {
+    display: inline;
+    font-size: inherit;
+    font-style: italic;
+}
+
+#card-popout .card-description-line {
+    margin-top: 0.5em;
+    margin-bottom: 0em;
+    color: black;
+}
+
+#card-popout .card-content-container {
+    padding: 2mm;
+    padding-top: 1mm;
+    border-radius: 2mm;
+    margin-top: 0px;
+    background-color: white;
+    border-color: inherit;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    font-size: inherit;
+}
+
+#card-popout .card-back {
+    background-color: white;
+    border-radius: 4mm;
+    border-color: inherit;
+    margin: 3mm;
+    flex: 1;
+    display: flex;
+}
+
+#card-popout .card-back-icon {
+    width: 1in;
+    height: 1in;
+    border: 4mm solid;
+    border-color: inherit;
+    border-radius: 4mm;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+#card-popout .card-back-inner {
+    margin: 3mm;
+    border: 1mm solid;
+    border-color: inherit;
+    border-radius: 4mm;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}

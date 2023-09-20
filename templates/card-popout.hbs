@@ -1,0 +1,25 @@
+<div id="card-popout" data-uuid="{{uuid}}" data-title="{{target.name}}">
+    <div class="flip-card-inner">
+        <div class="flip-card-front">
+            <header>
+                {{#each headerButtons}}
+                <a class="header-button control {{this.class}}" {{#if this.tooltip}}data-tooltip="{{this.tooltip}}"{{/if}}>
+                    <i class="{{this.icon}}"></i>
+                </a>
+                {{/each}}
+            </header>
+            {{{front}}}
+        </div>
+
+        <div class="flip-card-back">
+            <header>
+                {{#each headerButtons}}
+                <a class="header-button control {{this.class}}" {{#if this.tooltip}}data-tooltip="{{this.tooltip}}"{{/if}}>
+                    <i class="{{this.icon}}"></i>
+                </a>
+                {{/each}}
+            </header>
+            {{{back}}}
+        </div>
+    </div>
+</div>

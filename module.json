@@ -1,0 +1,28 @@
+{
+	"id": "item-cards-dnd5e",
+	"title": "Item Cards (dnd5e)",
+	"version": "1.0.0",
+	"compatibility": {
+		"minimum": "11",
+		"verified": "11"
+	},
+	"esmodules": ["main.js"],
+	"styles": ["style.css"],
+	"relationships": {
+		"systems": [
+			{
+				"id": "dnd5e",
+				"type": "system",
+				"compatibility": {}
+			}
+		]
+	},
+	"authors": [
+		{
+			"name": "elizeuangelo",
+			"discord": "mad.wizard",
+			"flags": {}
+		}
+	],
+	"socket": true
+}

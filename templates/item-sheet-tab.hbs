@@ -1,0 +1,64 @@
+<div class="tab item-card" data-group="primary" data-tab="item-card">
+	<div class="form-group">
+		<label>Active</label>
+		<input type="checkbox" name="flags.item-cards-dnd5e.active" {{checked data.flags.item-cards-dnd5e.active}} />
+        <p class="hint">
+			Automatically show this item's card when this item is used.
+		</p>
+	</div>
+
+    <div class="form-group">
+		<label>Open Flipped</label>
+		<input type="checkbox" name="flags.item-cards-dnd5e.flipped" {{checked data.flags.item-cards-dnd5e.flipped}} />
+	</div>
+
+    <hr>
+
+    <div class="form-group">
+		<label>Card</label>
+        <div class="form-fields">
+		    <button style="flex:1" type="button" id="card-preview"><i class="fas fa-image"></i> Preview</button>
+        </div>
+	</div>
+
+    <div class="form-group">
+        <label>Default Card Color</label>
+        <div class="form-fields">
+            {{colorPicker name="flags.item-cards-dnd5e.color" value=data.flags.item-cards-dnd5e.color}}
+        </div>
+    </div>
+
+    <div class="form-group">
+		<label>Border Radius</label>
+        <div class="form-fields">
+            <input type="text" name="flags.item-cards-dnd5e.borderRadius" value="{{data.flags.item-cards-dnd5e.borderRadius}}" />
+        </div>
+	</div>
+
+    <div class="form-group">
+        <label>Header CSS</label>
+        <div class="form-fields">
+            <input type="text" name="flags.item-cards-dnd5e.headerCSS" value="{{data.flags.item-cards-dnd5e.headerCSS}}">
+        </div>
+        <p class="hint">If you need to customize the card header.</p>
+    </div>
+
+    <h2>Customize Card Image</h2>
+    <div class="form-group">
+		<label>Front</label>
+		<div class="form-fields">
+            {{filePicker target="flags.item-cards-dnd5e.frontImage" type="imagevideo"}}
+            <input class="image" type="text" name="flags.item-cards-dnd5e.frontImage"
+                    value="{{data.flags.item-cards-dnd5e.frontImage}}"/>
+        </div>
+	</div>
+
+    <div class="form-group">
+		<label>Back</label>
+		<div class="form-fields">
+            {{filePicker target="flags.item-cards-dnd5e.backImage" type="imagevideo"}}
+            <input class="image" type="text" name="flags.item-cards-dnd5e.backImage"
+                    value="{{data.flags.item-cards-dnd5e.backImage}}"/>
+        </div>
+	</div>
+</div>

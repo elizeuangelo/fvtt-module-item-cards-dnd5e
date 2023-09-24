@@ -22,14 +22,14 @@
 	</div>
 
     <div class="form-group">
-        <label>Default Card Color</label>
+        <label>Background Card Color</label>
         <div class="form-fields">
             {{colorPicker name="flags.item-cards-dnd5e.color" value=data.flags.item-cards-dnd5e.color}}
         </div>
     </div>
 
     <div class="form-group">
-		<label>Border Radius</label>
+		<label>Card Border Radius</label>
         <div class="form-fields">
             <input type="text" name="flags.item-cards-dnd5e.borderRadius" value="{{data.flags.item-cards-dnd5e.borderRadius}}" />
         </div>
@@ -44,11 +44,22 @@
     </div>
 
     <div class="form-group">
+		<label>Remove Icon Border</label>
+		<input type="checkbox" name="flags.item-cards-dnd5e.iconBorder" {{checked data.flags.item-cards-dnd5e.iconBorder}} />
+	</div>
+
+    <div class="form-group">
 		<label>Smaller Fonts</label>
 		<input type="checkbox" name="flags.item-cards-dnd5e.smallerFonts" {{checked data.flags.item-cards-dnd5e.smallerFonts}} />
 	</div>
 
-    <h2>Customize Card Image</h2>
+    <div class="form-group">
+		<label>Contents</label>
+		<textarea name="flags.item-cards-dnd5e.contents"/>{{data.flags.item-cards-dnd5e.contents}}</textarea>
+        <p class="hint">Replace the content of the card with your own.</p>
+	</div>
+
+    <h3 class="form-header">Customize Card Image</h3>
     <div class="form-group">
 		<label>Front</label>
 		<div class="form-fields">

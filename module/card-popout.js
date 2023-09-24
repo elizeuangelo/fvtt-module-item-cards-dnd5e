@@ -1,4 +1,4 @@
-import { CARD_TYPES, createBackCard, createFrontCard } from './generate-card.js';
+import { createBackCard, createFrontCard } from './generate-card.js';
 import { getSetting } from './settings.js';
 
 function renderFrontCard(item) {
@@ -24,7 +24,6 @@ let element,
 export async function renderCard(uuid, flipped = false, preview = false) {
 	const target = await fromUuid(uuid);
 	if (!target) return ui.notifications.error(`Could not find ${uuid}`);
-	if (!(target.type in CARD_TYPES)) return;
 	if (element) element.remove();
 
 	const windowData = {
@@ -82,6 +81,7 @@ export async function renderCard(uuid, flipped = false, preview = false) {
 		const icon = backCard.querySelector('.card-back-icon');
 		icon.style.width = icon.style.height = '87.5px';
 		icon.insertAdjacentHTML('beforeend', `<img src="${target.img}">`);
+		if (target.getFlag('item-cards-dnd5e', 'iconBorder')) icon.style.border = 'none';
 	}
 
 	// Draggable

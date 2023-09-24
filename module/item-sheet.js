@@ -1,13 +1,9 @@
 import { shareImage } from './card-popout.js';
-import { CARD_TYPES } from './generate-card.js';
-
-// Config
-const ALLOWED_ITEM_TYPES = Object.keys(CARD_TYPES);
 
 // Logic
 const section = await getTemplate('modules/item-cards-dnd5e/templates/item-sheet-tab.hbs');
 function addTab(sheet, html, data) {
-	if (!ALLOWED_ITEM_TYPES.includes(sheet.item.type)) return;
+	if (!game.user.isGM) return;
 	const tab = $(
 		section(data, {
 			allowProtoMethodsByDefault: true,
@@ -32,7 +28,7 @@ function addTab(sheet, html, data) {
 	}
 
 	// Listeners
-	menu.on('click', () => sheet.setPosition({ height: 560 }));
+	menu.on('click', () => setTimeout(() => sheet.setPosition({ height: 'auto' }), 0));
 	tab.find('input').on('change', () =>
 		Hooks.once('renderItemSheet', () => sheet.element.find('nav [data-tab=item-card]')[0].click())
 	);

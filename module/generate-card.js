@@ -26,7 +26,7 @@ const CARD_EXAMPLE = {
 function defaultCard(item) {
 	return {
 		count: 1,
-		color: item.getFlag('item-cards-dnd5e', 'color') || 'maroon',
+		color: item.getFlag('item-cards-dnd5e', 'color') || 'dimgray',
 		title: item.name,
 		contents: [],
 		tags: [],
@@ -34,7 +34,7 @@ function defaultCard(item) {
 }
 function defaultOptions(item) {
 	const smallFonts = item.getFlag('item-cards-dnd5e', 'smallerFonts');
-	const titleSize = '' + Math.clamped(24 - item.name.length / 2, 10, 13);
+	const titleSize = '' + ~~Math.clamped(24 - item.name.length / 2, 10, 13);
 	return {
 		foreground_color: 'white',
 		background_color: 'white',
@@ -61,11 +61,15 @@ function firstLetterUpperCase(str) {
 	return str.replace(str[0], str[0].toUpperCase());
 }
 function removeTags(str) {
-	return str.replace(/^<p>(.*)<\/p>$/s, '$1');
+	return str
+		.replace(/^<p>(.*)<\/p>$/s, '$1')
+		.replace(/@[a-zA-Z]+\[[a-zA-Z.0-9]+\]{(.+?)}/g, '<b>$1</b>')
+		.replace(/\[\[\/r (.+?)]]|([0-9]+d[0-9+ ]+)/g, '<b>$1$2</b>');
 }
 
 function generateSpell(item) {
 	const card = {
+		color: 'saddlebrown',
 		contents: [
 			`subtitle | ${`${item.labels.level} ${item.labels.school || ''}`.toLocaleLowerCase()}`,
 			'rule',
@@ -96,7 +100,7 @@ function generateWeapon(item) {
 	const card = {
 		contents: [
 			`subtitle | ${firstLetterUpperCase(CONFIG.DND5E.weaponTypes[item.system.weaponType].toLowerCase())} weapon ${
-				item.system.price?.value ? `(${item.system.price.value}${item.system.price.denomination})` : ''
+				item.system.price?.value ? `(${item.system.price.value.toLocaleString()}${item.system.price.denomination})` : ''
 			}`,
 			'rule',
 			item.hasDamage ? `property | Damage | ${item.system.damage.parts.map(([k, v]) => `${k} ${v}`).join(' + ')}` : '',
@@ -120,7 +124,7 @@ function generateArmor(item) {
 	const card = {
 		contents: [
 			`subtitle | ${item.system.armor.type.titleCase()} armor ${
-				item.system.price ? `(${item.system.price.value}${item.system.price.denomination})` : ''
+				item.system.price ? `(${item.system.price.value.toLocaleString()}${item.system.price.denomination})` : ''
 			}`,
 			'rule',
 			`property | AC | ${item.system.armor.value}${item.system.armor.dex ? ` + Dex (max ${item.system.armor.dex})` : ''}`,
@@ -134,19 +138,31 @@ function generateArmor(item) {
 	};
 	return { ...defaultCard(item), ...card };
 }
-function generateBasic(item) {
+function generateBasic(item, color = 'dimgray') {
+	const charged = item.system.uses.max > 1;
+	const prop = charged;
 	const card = {
+		color,
 		contents: [
-			`subtitle | ${item.system.rarity || 'Common'} ${item.system.armor.type || item.type} ${
-				item.system.price ? `(${item.system.price.value}${item.system.price.denomination})` : ''
+			`subtitle | ${'rarity' in item.system ? ` ${item.system.rarity.titleCase() || 'Ordinary'}` : ''} ${
+				item.system.armor?.type ||
+				('rarity' in item.system ? item.consumableType || item.type : (item.consumableType || item.type).titleCase())
+			} ${
+				item.system.price?.value ? `(${item.system.price.value.toLocaleString()}${item.system.price.denomination})` : ''
 			}`,
 			'rule',
+			charged ? `property | Maximum charges | ${item.system.uses.max}` : '',
+			item.system.uses.recovery ? `property | Recovery | ${item.system.uses.recovery}` : '',
+			prop ? 'rule' : '',
 			'fill | 2',
 			item.system.description.value ? `text | ${removeTags(item.system.description.value)}` : '',
 			'fill | 3',
 		],
 	};
 	return { ...defaultCard(item), ...card };
+}
+function contentCard(item, contents) {
+	return { ...defaultCard(item), ...{ contents } };
 }
 
 export const CARD_TYPES = {
@@ -156,16 +172,18 @@ export const CARD_TYPES = {
 	},
 	spell: generateSpell,
 	weapon: generateWeapon,
+	consumable: generateBasic,
+	feat: (item) => generateBasic(item, 'indigo'),
 };
 export function createFrontCard(item) {
-	if (!(item.type in CARD_TYPES)) return;
 	const options = { ...defaultOptions(item) };
-	const card = CARD_TYPES[item.type](item);
+	const contents = item.getFlag('item-cards-dnd5e', 'contents');
+	const card = contents ? contentCard(item, contents.split('\n')) : CARD_TYPES[item.type]?.(item) ?? generateBasic(item);
 	return card_generate_front(card, options);
 }
 export function createBackCard(item) {
-	if (!(item.type in CARD_TYPES)) return;
 	const options = { ...defaultOptions(item) };
-	const card = CARD_TYPES[item.type](item);
+	const contents = item.getFlag('item-cards-dnd5e', 'contents');
+	const card = contents ? contentCard(item, contents.split('\n')) : CARD_TYPES[item.type]?.(item) ?? generateBasic(item);
 	return card_generate_back(card, options);
 }

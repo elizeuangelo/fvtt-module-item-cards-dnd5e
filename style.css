@@ -75,6 +75,10 @@
     font-weight: bold;
     background-color: inherit;
     color: white;
+    text-overflow: ellipsis;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 #card-popout .card-title-13 {
@@ -99,7 +103,6 @@
 
 #card-popout .card-header {
     display: flex;
-    width: 78%;
 }
 
 #card-popout .card-subtitle {
@@ -198,4 +201,22 @@
 #card-popout .card-font-size-10 {
     font-size: 10px;
     line-height: 1.3;
+}
+
+#card-popout .card-section {
+    border-bottom: 1px solid;
+    font-size: 10pt;
+    font-variant: small-caps;
+    font-weight: normal;
+    letter-spacing: 1px;
+    margin: 0;
+    border-color: inherit;
+}
+
+#card-popout .card-section + .card-element {
+    margin-top: 0.3em;
+}
+
+#card-popout .card-description-text {
+    display: inline;
 }

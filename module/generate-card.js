@@ -71,10 +71,14 @@ function generateSpell(item) {
 			'rule',
 			`property | Casting time | ${item.labels.activation}`,
 			`property | Range | ${item.labels.range}${item.labels.range === 'Self' ? ` (${item.labels.target})` : ''}`,
-			`property | Components | ${item.labels.components.vsm}${item.labels.materials ? ` (${item.labels.materials})` : ''}`,
-			`property | Duration | ${item.system.components.concentration ? `Concentration, up to ` : ''}${
-				item.labels.duration || 'Instantaneous'
+			`property | Components | ${item.labels.components.vsm}${
+				item.labels.materials ? ` (${item.labels.materials.toLowerCase()})` : ''
 			}`,
+			item.labels.duration
+				? `property | Duration | ${item.system.components.concentration ? `Concentration, up to ` : ''}${
+						item.labels.duration || 'Instantaneous'
+				  }`
+				: '',
 			'rule',
 			'fill | 2',
 			`description | Description | ${removeTags(item.system.description.value)}`,
@@ -112,20 +116,13 @@ function generateWeapon(item) {
 function generateArmor(item) {
 	const card = {
 		contents: [
-			`subtitle | ${firstLetterUpperCase(CONFIG.DND5E.weaponTypes[item.system.weaponType].toLowerCase())} weapon ${
+			`subtitle | ${item.system.armor.type.titleCase()} armor ${
 				item.system.price ? `(${item.system.price.value}${item.system.price.denomination})` : ''
 			}`,
 			'rule',
-			item.hasDamage ? `property | Damage | ${item.system.damage.parts.map(([k, v]) => `${k} ${v}`).join(' + ')}` : '',
-			item.isVersatile ? `property | Versatile | ${item.system.damage.versatile}` : '',
-			`property | Modifier | ${CONFIG.DND5E.abilities[item.abilityMod].label}${
-				item.abilityMod === 'str' && item.system.properties.fin ? ` or Dexterity` : ''
-			}`,
-			`property | Properties | ${Object.entries(item.system.properties)
-				.map(([k, v]) => (v ? CONFIG.DND5E.weaponProperties[k] : undefined))
-				.filter(Boolean)
-				.join(', ')}`,
-			`property | ${isRanged ? 'Range' : 'Reach'} | ${item.labels.range}`,
+			`property | AC | ${item.system.armor.value}${item.system.armor.dex ? ` + Dex (max ${item.system.armor.dex})` : ''}`,
+			item.system.strength ? `property | Strenght required | ${item.system.strength}` : '',
+			item.system.stealth ? `property | Stealth| Disadvantage` : '',
 			'rule',
 			'fill | 2',
 			`description | Description | ${removeTags(item.system.description.value)}`,

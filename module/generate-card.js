@@ -61,7 +61,7 @@ function firstLetterUpperCase(str) {
 	return str.replace(str[0], str[0].toUpperCase());
 }
 function removeTags(str) {
-	return str.replace(/^<p>(.+)<\/p>$/, '$1');
+	return str.replace(/^<p>(.*)<\/p>$/s, '$1');
 }
 
 function generateSpell(item) {
@@ -81,7 +81,7 @@ function generateSpell(item) {
 				: '',
 			'rule',
 			'fill | 2',
-			`description | Description | ${removeTags(item.system.description.value)}`,
+			item.system.description.value ? `text | ${removeTags(item.system.description.value)}` : '',
 			'fill | 3',
 		],
 	};
@@ -89,25 +89,28 @@ function generateSpell(item) {
 }
 function generateWeapon(item) {
 	const isRanged = item.system.actionType === 'rwak' || item.system.properties.thr;
+	const properties = Object.entries(item.system.properties)
+		.map(([k, v]) => (v ? CONFIG.DND5E.weaponProperties[k] : undefined))
+		.filter(Boolean)
+		.join(', ');
 	const card = {
 		contents: [
 			`subtitle | ${firstLetterUpperCase(CONFIG.DND5E.weaponTypes[item.system.weaponType].toLowerCase())} weapon ${
-				item.system.price ? `(${item.system.price.value}${item.system.price.denomination})` : ''
+				item.system.price?.value ? `(${item.system.price.value}${item.system.price.denomination})` : ''
 			}`,
 			'rule',
 			item.hasDamage ? `property | Damage | ${item.system.damage.parts.map(([k, v]) => `${k} ${v}`).join(' + ')}` : '',
 			item.isVersatile ? `property | Versatile | ${item.system.damage.versatile}` : '',
-			`property | Modifier | ${CONFIG.DND5E.abilities[item.abilityMod].label}${
-				item.abilityMod === 'str' && item.system.properties.fin ? ` or Dexterity` : ''
-			}`,
-			`property | Properties | ${Object.entries(item.system.properties)
-				.map(([k, v]) => (v ? CONFIG.DND5E.weaponProperties[k] : undefined))
-				.filter(Boolean)
-				.join(', ')}`,
-			`property | ${isRanged ? 'Range' : 'Reach'} | ${item.labels.range}`,
+			item.abilityMod
+				? `property | Modifier | ${CONFIG.DND5E.abilities[item.abilityMod].label}${
+						item.abilityMod === 'str' && item.system.properties.fin ? ` or Dexterity` : ''
+				  }`
+				: '',
+			properties ? `property | Properties | ${properties}` : '',
+			item.labels.range ? `property | ${isRanged ? 'Range' : 'Reach'} | ${item.labels.range}` : '',
 			'rule',
 			'fill | 2',
-			`description | Description | ${removeTags(item.system.description.value)}`,
+			item.system.description.value ? `text | ${removeTags(item.system.description.value)}` : '',
 			'fill | 3',
 		],
 	};
@@ -125,18 +128,31 @@ function generateArmor(item) {
 			item.system.stealth ? `property | Stealth| Disadvantage` : '',
 			'rule',
 			'fill | 2',
-			`description | Description | ${removeTags(item.system.description.value)}`,
+			item.system.description.value ? `text | ${removeTags(item.system.description.value)}` : '',
 			'fill | 3',
 		],
 	};
 	return { ...defaultCard(item), ...card };
 }
-function generateEquipment(item) {}
+function generateBasic(item) {
+	const card = {
+		contents: [
+			`subtitle | ${item.system.rarity || 'Common'} ${item.system.armor.type || item.type} ${
+				item.system.price ? `(${item.system.price.value}${item.system.price.denomination})` : ''
+			}`,
+			'rule',
+			'fill | 2',
+			item.system.description.value ? `text | ${removeTags(item.system.description.value)}` : '',
+			'fill | 3',
+		],
+	};
+	return { ...defaultCard(item), ...card };
+}
 
 export const CARD_TYPES = {
 	equipment: (item) => {
 		if (item.isArmor) return generateArmor(item);
-		return generateEquipment(item);
+		return generateBasic(item);
 	},
 	spell: generateSpell,
 	weapon: generateWeapon,

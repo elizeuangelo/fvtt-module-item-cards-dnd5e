@@ -48,7 +48,6 @@
 
 #card-popout .flip-card-front img, #card-popout .flip-card-back img {
     border: none;
-    box-shadow: 0 0 20px var(--color-shadow-dark);
 }
 
 #card-popout .flip-card-back {

@@ -1,4 +1,5 @@
 import { createBackCard, createFrontCard } from './generate-card.js';
+import { getSetting } from './settings.js';
 
 function renderFrontCard(item) {
 	const customImage = item.getFlag('item-cards-dnd5e', 'frontImage');
@@ -17,9 +18,10 @@ let element,
 	position = {
 		left: ~~(window.innerWidth / 2),
 		top: ~~(window.innerHeight / 2),
-	};
+	},
+	closeTimeout = 0;
 
-export async function renderCard(uuid, flipped = false) {
+export async function renderCard(uuid, flipped = false, preview = false) {
 	const target = await fromUuid(uuid);
 	if (!target) return ui.notifications.error(`Could not find ${uuid}`);
 	if (element) element.remove();
@@ -66,7 +68,9 @@ export async function renderCard(uuid, flipped = false) {
 	// Border radius
 	const borderRadius = target.getFlag('item-cards-dnd5e', 'borderRadius') || '15px';
 	imgs.forEach((img) => (img.style.borderRadius = borderRadius));
-	frontCard.querySelector('.card').style.borderRadius = backCard.querySelector('.card').style.borderRadius = borderRadius;
+	html.find('.card')
+		.toArray()
+		.forEach((el) => (el.style.borderRadius = borderRadius));
 
 	// Position
 	setPosition();
@@ -91,7 +95,10 @@ export async function renderCard(uuid, flipped = false) {
 			button.onclick(event);
 		});
 		let pos_start;
-		html.on('pointerdown', () => (pos_start = deepClone(position)));
+		html.on('pointerdown', () => {
+			pos_start = deepClone(position);
+			clearTimeout(closeTimeout);
+		});
 		html.on('click', (event) => {
 			if (!objectsEqual(position, pos_start)) return;
 			event.preventDefault();
@@ -107,14 +114,40 @@ export async function renderCard(uuid, flipped = false) {
 	}, 500);
 
 	setTimeout(() => html.css('opacity', '1'), 0);
+
+	// Auto Close
+	const autoClose = getSetting('autoClose');
+	if (autoClose && !preview) {
+		clearTimeout(closeTimeout);
+		closeTimeout = setTimeout(() => closeCard(), autoClose);
+	}
 }
 
 function setPosition({ left, top } = position) {
 	if (!element) return;
-	position.left = left;
-	position.top = top;
-	element[0].style.left = left + 'px';
-	element[0].style.top = top + 'px';
+	const el = element[0],
+		currentPosition = position,
+		scale = 0.5,
+		width = el.clientWidth,
+		height = el.clientHeight;
+
+	// Update Left
+	if (!el.style.left || Number.isFinite(left)) {
+		const scaledWidth = width * scale;
+		const tarL = Number.isFinite(left) ? left : (window.innerWidth - scaledWidth) / 2;
+		const maxL = Math.max(window.innerWidth - scaledWidth, 0);
+		currentPosition.left = left = Math.clamped(tarL, width / 2, maxL);
+		el.style.left = `${left}px`;
+	}
+
+	// Update Top
+	if (!el.style.top || Number.isFinite(top)) {
+		const scaledHeight = height * scale;
+		const tarT = Number.isFinite(top) ? top : (window.innerHeight - scaledHeight) / 2;
+		const maxT = Math.max(window.innerHeight - scaledHeight, 0);
+		currentPosition.top = Math.clamped(tarT, height / 2, maxT);
+		el.style.top = `${currentPosition.top}px`;
+	}
 }
 
 function _getHeaderButtons() {
@@ -136,6 +169,7 @@ function _getHeaderButtons() {
 					uuid: element[0].dataset.uuid,
 					title: element[0].dataset.title,
 					flipped: element[0].classList.contains('flipped'),
+					preview: true,
 				}),
 		});
 	}
@@ -144,6 +178,7 @@ function _getHeaderButtons() {
 
 async function closeCard() {
 	if (!element) return;
+	clearTimeout(closeTimeout);
 	element[0].style.opacity = '0';
 	element[0].classList.toggle('flipped');
 	return new Promise((resolve) => {
@@ -163,6 +198,7 @@ function shareImage(options = {}) {
 	game.socket.emit('module.item-cards-dnd5e', {
 		uuid: options.uuid,
 		flipped: options.flipped,
+		preview: options.preview,
 	});
 	ui.notifications.info(
 		game.i18n.format('JOURNAL.ActionShowSuccess', {
@@ -172,7 +208,9 @@ function shareImage(options = {}) {
 		})
 	);
 }
-Hooks.on('ready', () => game.socket.on('module.item-cards-dnd5e', ({ uuid, flipped }) => renderCard(uuid, flipped)));
+Hooks.on('ready', () =>
+	game.socket.on('module.item-cards-dnd5e', ({ uuid, flipped, preview }) => renderCard(uuid, flipped, preview))
+);
 
 function flipCard() {
 	if (!element) return;

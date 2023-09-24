@@ -31,13 +31,13 @@ function addTab(sheet, html, data) {
 	}
 
 	// Listeners
-	menu.on('click', () => sheet.setPosition({ height: 540 }));
+	menu.on('click', () => sheet.setPosition({ height: 560 }));
 	tab.find('input').on('change', () =>
 		Hooks.once('renderItemSheet', () => sheet.element.find('nav [data-tab=item-card]')[0].click())
 	);
 	tab.find('button.file-picker').on('click', (ev) => sheet._activateFilePicker(ev));
 	const flipped = sheet.document.getFlag('item-cards-dnd5e', 'flipped');
-	tab.find('#card-preview').on('click', () => renderCard(sheet.item.uuid, flipped));
+	tab.find('#card-preview').on('click', () => renderCard(sheet.item.uuid, flipped, true));
 }
 
 // -------------------------------- //

@@ -1,4 +1,4 @@
-import { card_default_options, card_generate_back, card_generate_front } from '../lib/card-generator/cards.js';
+import { card_generate_back, card_generate_front } from '../lib/card-generator/cards.js';
 
 const CARD_EXAMPLE = {
 	count: 1,
@@ -32,19 +32,59 @@ function defaultCard(item) {
 		tags: [],
 	};
 }
+function defaultOptions(item) {
+	const smallFonts = item.getFlag('item-cards-dnd5e', 'smallerFonts');
+	const titleSize = '' + Math.clamped(24 - item.name.length / 2, 10, 13);
+	return {
+		foreground_color: 'white',
+		background_color: 'white',
+		default_color: 'black',
+		default_icon_front: '',
+		default_icon_back: '',
+		default_title_size: titleSize,
+		default_card_font_size: smallFonts ? '10' : 'inherit',
+		page_size: '210mm,297mm',
+		page_rows: '3',
+		page_columns: '3',
+		page_zoom: '100',
+		card_arrangement: 'doublesided',
+		card_size: '2.5in,3.5in',
+		card_width: '2.5in',
+		card_height: '3.5in',
+		card_count: null,
+		icon_inline: true,
+		rounded_corners: true,
+	};
+}
 
 function firstLetterUpperCase(str) {
 	return str.replace(str[0], str[0].toUpperCase());
 }
-
-function generateSpell(item) {
-	const card = {};
-	return { ...defaultCard(item), ...card };
-}
 function removeTags(str) {
 	return str.replace(/^<p>(.+)<\/p>$/, '$1');
 }
+
+function generateSpell(item) {
+	const card = {
+		contents: [
+			`subtitle | ${`${item.labels.level} ${item.labels.school}`.toLocaleLowerCase()}`,
+			'rule',
+			`property | Casting time | ${item.labels.activation}`,
+			`property | Range | ${item.labels.range}${item.labels.range === 'Self' ? ` (${item.labels.target})` : ''}`,
+			`property | Components | ${item.labels.components.vsm}${item.labels.materials ? ` (${item.labels.materials})` : ''}`,
+			`property | Duration | ${item.system.components.concentration ? `Concentration, up to ` : ''}${
+				item.labels.duration || 'Instantaneous'
+			}`,
+			'rule',
+			'fill | 2',
+			`description | Description | ${removeTags(item.system.description.value)}`,
+			'fill | 3',
+		],
+	};
+	return { ...defaultCard(item), ...card };
+}
 function generateWeapon(item) {
+	const isRanged = item.system.actionType === 'rwak' || item.system.properties.thr;
 	const card = {
 		contents: [
 			`subtitle | ${firstLetterUpperCase(CONFIG.DND5E.weaponTypes[item.system.weaponType].toLowerCase())} weapon ${
@@ -60,7 +100,7 @@ function generateWeapon(item) {
 				.map(([k, v]) => (v ? CONFIG.DND5E.weaponProperties[k] : undefined))
 				.filter(Boolean)
 				.join(', ')}`,
-			`property | Action | ${item.system.activatedEffectChatProperties.filter(Boolean).join(', ')}`,
+			`property | ${isRanged ? 'Range' : 'Reach'} | ${item.labels.range}`,
 			'rule',
 			'fill | 2',
 			`description | Description | ${removeTags(item.system.description.value)}`,
@@ -69,20 +109,50 @@ function generateWeapon(item) {
 	};
 	return { ...defaultCard(item), ...card };
 }
+function generateArmor(item) {
+	const card = {
+		contents: [
+			`subtitle | ${firstLetterUpperCase(CONFIG.DND5E.weaponTypes[item.system.weaponType].toLowerCase())} weapon ${
+				item.system.price ? `(${item.system.price.value}${item.system.price.denomination})` : ''
+			}`,
+			'rule',
+			item.hasDamage ? `property | Damage | ${item.system.damage.parts.map(([k, v]) => `${k} ${v}`).join(' + ')}` : '',
+			item.isVersatile ? `property | Versatile | ${item.system.damage.versatile}` : '',
+			`property | Modifier | ${CONFIG.DND5E.abilities[item.abilityMod].label}${
+				item.abilityMod === 'str' && item.system.properties.fin ? ` or Dexterity` : ''
+			}`,
+			`property | Properties | ${Object.entries(item.system.properties)
+				.map(([k, v]) => (v ? CONFIG.DND5E.weaponProperties[k] : undefined))
+				.filter(Boolean)
+				.join(', ')}`,
+			`property | ${isRanged ? 'Range' : 'Reach'} | ${item.labels.range}`,
+			'rule',
+			'fill | 2',
+			`description | Description | ${removeTags(item.system.description.value)}`,
+			'fill | 3',
+		],
+	};
+	return { ...defaultCard(item), ...card };
+}
+function generateEquipment(item) {}
 
 export const CARD_TYPES = {
+	equipment: (item) => {
+		if (item.isArmor) return generateArmor(item);
+		return generateEquipment(item);
+	},
 	spell: generateSpell,
 	weapon: generateWeapon,
 };
 export function createFrontCard(item) {
 	if (!(item.type in CARD_TYPES)) return;
-	const options = { ...card_default_options() };
+	const options = { ...defaultOptions(item) };
 	const card = CARD_TYPES[item.type](item);
 	return card_generate_front(card, options);
 }
 export function createBackCard(item) {
 	if (!(item.type in CARD_TYPES)) return;
-	const options = { ...card_default_options() };
+	const options = { ...defaultOptions(item) };
 	const card = CARD_TYPES[item.type](item);
 	return card_generate_back(card, options);
 }

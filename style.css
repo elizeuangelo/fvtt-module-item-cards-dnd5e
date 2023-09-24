@@ -8,8 +8,8 @@
     z-index: 99;
     position: absolute;
     transform: translate(-50%, -50%);
-    min-width: 250px;
-    min-height: 250px;
+    min-width: 200px;
+    min-height: 200px;
     perspective: 500px;
     transition: opacity 0.2s ease;
     opacity: 0;
@@ -34,7 +34,7 @@
     transform-style: preserve-3d;
 }
 
-#card-popout.flipped .flip-card-inner {
+#card-popout:not(.flipped) .flip-card-inner {
     transform: rotateY(180deg);
 }
 
@@ -43,6 +43,7 @@
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     display: flex;
+    z-index: 1;
 }
 
 #card-popout .flip-card-front img, #card-popout .flip-card-back img {
@@ -75,12 +76,31 @@
     font-weight: bold;
     background-color: inherit;
     color: white;
+}
+
+#card-popout .card-title-13 {
     font-size: 13pt;
     line-height: 7mm;
 }
 
+#card-popout .card-title-12 {
+    font-size: 12pt;
+    line-height: 7mm;
+}
+
+#card-popout .card-title-11 {
+    font-size: 11pt;
+    line-height: 7.5mm;
+}
+
+#card-popout .card-title-10 {
+    font-size: 11pt;
+    line-height: 7.5mm;
+}
+
 #card-popout .card-header {
     display: flex;
+    width: 78%;
 }
 
 #card-popout .card-subtitle {
@@ -96,6 +116,7 @@
     height: 1mm;
     margin-top: 0.3em;
     margin-bottom: 0.3em;
+    flex: none;
 }
 
 #card-popout .card-property-line {
@@ -140,6 +161,7 @@
     flex-direction: column;
     flex: 1;
     font-size: inherit;
+    overflow-y: scroll;
 }
 
 #card-popout .card-back {
@@ -172,4 +194,9 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+}
+
+#card-popout .card-font-size-10 {
+    font-size: 10px;
+    line-height: 1.3;
 }

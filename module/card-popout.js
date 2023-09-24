@@ -1,4 +1,4 @@
-import { createBackCard, createFrontCard } from './generate-card.js';
+import { CARD_TYPES, createBackCard, createFrontCard } from './generate-card.js';
 import { getSetting } from './settings.js';
 
 function renderFrontCard(item) {
@@ -24,6 +24,7 @@ let element,
 export async function renderCard(uuid, flipped = false, preview = false) {
 	const target = await fromUuid(uuid);
 	if (!target) return ui.notifications.error(`Could not find ${uuid}`);
+	if (!(target.type in CARD_TYPES)) return;
 	if (element) element.remove();
 
 	const windowData = {
@@ -194,7 +195,7 @@ async function closeCard() {
  * Share the displayed image with other connected Users
  * @param {ShareImageConfig} [options]
  */
-function shareImage(options = {}) {
+export function shareImage(options = {}) {
 	game.socket.emit('module.item-cards-dnd5e', {
 		uuid: options.uuid,
 		flipped: options.flipped,

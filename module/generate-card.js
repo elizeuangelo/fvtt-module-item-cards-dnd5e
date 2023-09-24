@@ -67,7 +67,7 @@ function removeTags(str) {
 function generateSpell(item) {
 	const card = {
 		contents: [
-			`subtitle | ${`${item.labels.level} ${item.labels.school}`.toLocaleLowerCase()}`,
+			`subtitle | ${`${item.labels.level} ${item.labels.school || ''}`.toLocaleLowerCase()}`,
 			'rule',
 			`property | Casting time | ${item.labels.activation}`,
 			`property | Range | ${item.labels.range}${item.labels.range === 'Self' ? ` (${item.labels.target})` : ''}`,

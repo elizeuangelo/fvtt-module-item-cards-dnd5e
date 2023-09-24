@@ -1,3 +1,4 @@
+import { shareImage } from './card-popout.js';
 import { CARD_TYPES } from './generate-card.js';
 
 // Config
@@ -42,3 +43,10 @@ function addTab(sheet, html, data) {
 
 // -------------------------------- //
 Hooks.on('renderItemSheet', addTab);
+Hooks.on('dnd5e.displayCard', (item) => {
+	const uuid = item.uuid,
+		flipped = item.getFlag('item-cards-dnd5e', 'flipped'),
+		preview = false;
+	renderCard(uuid, flipped, preview);
+	shareImage({ uuid, flipped, preview });
+});

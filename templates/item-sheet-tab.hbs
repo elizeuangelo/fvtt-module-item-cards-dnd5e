@@ -1,7 +1,11 @@
 <div class="tab item-card" data-group="primary" data-tab="item-card">
 	<div class="form-group">
-		<label>Throw Card on Item Use</label>
-		<input type="checkbox" name="flags.item-cards-dnd5e.active" {{checked data.flags.item-cards-dnd5e.active}} />
+		<label>Show Card on Item Use</label>
+        <select name="flags.item-cards-dnd5e.active">
+            <option value="" {{#if (eq data.flags.item-cards-dnd5e.active "")}}selected{{/if}}>Default</option>
+            <option value="true" {{#if (eq data.flags.item-cards-dnd5e.active "true")}}selected{{/if}}>Show</option>
+            <option value="false" {{#if (eq data.flags.item-cards-dnd5e.active "false")}}selected{{/if}}>Hide</option>
+        </select>
         <p class="hint">
 			Automatically show this item's card when this item is used.
 		</p>
@@ -60,20 +64,20 @@
 	</div>
 
     <h3 class="form-header">Customize Card Image</h3>
-    <div class="form-group" {{#if specialMember}}data-link-keep{{/if}}>
+    <div class="form-group">
 		<label>Front</label>
 		<div class="form-fields">
             {{filePicker target="flags.item-cards-dnd5e.frontImage" type="imagevideo"}}
-            <input class="image" type="text" name="flags.item-cards-dnd5e.frontImage"
+            <input class="image" type="text" name="flags.item-cards-dnd5e.frontImage" {{#if specialMember}}data-link-keep{{/if}}
                     value="{{data.flags.item-cards-dnd5e.frontImage}}"/>
         </div>
 	</div>
 
     <div class="form-group">
 		<label>Back</label>
-		<div class="form-fields" {{#if specialMember}}data-link-keep{{/if}}>
+		<div class="form-fields">
             {{filePicker target="flags.item-cards-dnd5e.backImage" type="imagevideo"}}
-            <input class="image" type="text" name="flags.item-cards-dnd5e.backImage"
+            <input class="image" type="text" name="flags.item-cards-dnd5e.backImage" {{#if specialMember}}data-link-keep{{/if}}
                     value="{{data.flags.item-cards-dnd5e.backImage}}"/>
         </div>
 	</div>

@@ -111,7 +111,7 @@ function generateWeapon(item) {
 				  }`
 				: '',
 			properties ? `property | Properties | ${properties}` : '',
-			item.labels.range ? `property | ${isRanged ? 'Range' : 'Reach'} | ${item.labels.range}` : '',
+			item.labels.range && isRanged ? `property | Range | ${item.labels.range}` : '',
 			'rule',
 			'fill | 2',
 			item.system.description.value ? `text | ${removeTags(item.system.description.value)}` : '',
@@ -123,7 +123,7 @@ function generateWeapon(item) {
 function generateArmor(item) {
 	const card = {
 		contents: [
-			`subtitle | ${item.system.armor.type.titleCase()} armor ${
+			`subtitle | ${firstLetterUpperCase(item.system.armor.type)} armor ${
 				item.system.price ? `(${item.system.price.value.toLocaleString()}${item.system.price.denomination})` : ''
 			}`,
 			'rule',
@@ -144,10 +144,10 @@ function generateBasic(item, color = 'dimgray') {
 	const card = {
 		color,
 		contents: [
-			`subtitle | ${'rarity' in item.system ? ` ${item.system.rarity.titleCase() || 'Ordinary'}` : ''} ${
+			`subtitle | ${firstLetterUpperCase(
 				item.system.armor?.type ||
-				('rarity' in item.system ? item.consumableType || item.type : (item.consumableType || item.type).titleCase())
-			} ${
+					('rarity' in item.system ? item.consumableType || item.type : item.consumableType || item.type)
+			)} ${
 				item.system.price?.value ? `(${item.system.price.value.toLocaleString()}${item.system.price.denomination})` : ''
 			}`,
 			'rule',

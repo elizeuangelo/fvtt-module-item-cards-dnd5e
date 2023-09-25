@@ -26,21 +26,29 @@ const settings = {
 		type: Number,
 		default: 6000,
 	},
-	showCardsPCs: {
+	showCardsPlayers: {
 		name: 'Show Cards PC (server)',
-		hint: 'Show item cards when PCs use items.',
+		hint: 'Show item cards when players use items.',
 		scope: 'world',
 		config: true,
 		type: Boolean,
 		default: true,
 	},
-	showCardsNPCs: {
-		name: 'Show Cards NPC (server)',
-		hint: 'Show item cards when NPCs use items.',
+	showCardsGMs: {
+		name: 'Show Cards GM (server)',
+		hint: 'Show item cards when GMs use items.',
 		scope: 'world',
 		config: true,
 		type: Boolean,
 		default: false,
+	},
+	specialMembership: {
+		name: 'Special Membership (server)',
+		hint: 'If using the Donation Membership API, allow members with at least the specified membership to change the cards images.',
+		scope: 'world',
+		config: true,
+		type: String,
+		default: '',
 	},
 };
 export function getSetting(name) {

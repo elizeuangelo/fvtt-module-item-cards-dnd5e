@@ -1,4 +1,5 @@
 import { PopoutCard } from './card-popout.js';
+import { getSetting } from './settings.js';
 
 // Logic
 const section = await getTemplate('modules/item-cards-dnd5e/templates/item-sheet-tab.hbs');
@@ -6,7 +7,7 @@ function addTab(sheet, html, data) {
 	if (!game.user.isGM) return;
 	const tab = $(
 		section(
-			{ ...data, specialMember: false },
+			{ ...data, specialMember: minimumMembership() },
 			{
 				allowProtoMethodsByDefault: true,
 				allowProtoPropertiesByDefault: true,
@@ -32,7 +33,7 @@ function addTab(sheet, html, data) {
 
 	// Listeners
 	menu.on('click', () => setTimeout(() => sheet.setPosition({ height: 'auto' }), 0));
-	tab.find('input').on('change', () =>
+	tab.find('input,textarea').on('change', () =>
 		Hooks.once('renderItemSheet', () => sheet.element.find('nav [data-tab=item-card]')[0].click())
 	);
 	tab.find('button.file-picker').on('click', (ev) => sheet._activateFilePicker(ev));
@@ -40,9 +41,23 @@ function addTab(sheet, html, data) {
 	tab.find('#card-preview').on('click', () => PopoutCard.createFromUuid({ uuid: sheet.item.uuid, flipped, preview: true }));
 }
 
+function minimumMembership() {
+	const membership = getSetting('specialMembership');
+	return membership && game.membership?.hasPermissionSync(membership);
+}
+
 // -------------------------------- //
 Hooks.on('renderItemSheet', addTab);
 Hooks.on('dnd5e.displayCard', (item) => {
+	const activeFlag = item.getFlag('item-cards-dnd5e', 'active');
+	if (activeFlag === 'false') return;
+	if (!activeFlag) {
+		if (game.user.isGM) {
+			if (!getSetting('showCardsGMs')) return;
+		} else {
+			if (!getSetting('showCardsPlayers')) return;
+		}
+	}
 	const options = { uuid: item.uuid, flipped: item.getFlag('item-cards-dnd5e', 'flipped'), preview: false, item };
 	const card = PopoutCard.createFromItem(options);
 	card.shareImage(options);

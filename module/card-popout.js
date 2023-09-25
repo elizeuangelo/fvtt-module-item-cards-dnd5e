@@ -97,12 +97,14 @@ export class PopoutCard {
 		}
 	}
 	renderFrontCard() {
-		const customImage = this.item.getFlag('item-cards-dnd5e', 'frontImage');
+		const customImage =
+			this.item.getFlag('item-cards-dnd5e', 'memberFrontImage') || this.item.getFlag('item-cards-dnd5e', 'frontImage');
 		if (customImage) return /*html*/ `<img src="${customImage}">`;
 		return createFrontCard(this.item);
 	}
 	renderBackCard() {
-		const customImage = this.item.getFlag('item-cards-dnd5e', 'backImage');
+		const customImage =
+			this.item.getFlag('item-cards-dnd5e', 'memberBackImage') || this.item.getFlag('item-cards-dnd5e', 'backImage');
 		if (customImage) return /*html*/ `<img src="${customImage}">`;
 		return createBackCard(this.item);
 	}

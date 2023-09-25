@@ -99,29 +99,34 @@ export class PopoutCard {
 	renderFrontCard() {
 		const customImage =
 			this.item.getFlag('item-cards-dnd5e', 'memberFrontImage') || this.item.getFlag('item-cards-dnd5e', 'frontImage');
-		if (customImage) return /*html*/ `<img src="${customImage}">`;
-		return createFrontCard(this.item);
+		if (customImage) return { type: 'img', el: /*html*/ `<img src="${customImage}">` };
+		return { type: 'gen', el: createFrontCard(this.item) };
 	}
 	renderBackCard() {
 		const customImage =
 			this.item.getFlag('item-cards-dnd5e', 'memberBackImage') || this.item.getFlag('item-cards-dnd5e', 'backImage');
-		if (customImage) return /*html*/ `<img src="${customImage}">`;
-		return createBackCard(this.item);
+		if (customImage) return { type: 'img', el: /*html*/ `<img src="${customImage}">` };
+		return { type: 'gen', el: createBackCard(this.item) };
 	}
 	async render({ flipped = false, preview = false } = {}) {
 		if (!getSetting('showCards')) return;
 		if (this.element) this.element.remove();
 		const target = this.item;
+		const frontCardData = this.renderFrontCard();
+		const backCardData = this.renderBackCard();
 		const windowData = {
 			target,
 			uuid: target.uuid,
 			headerButtons: this._getHeaderButtons(),
-			front: this.renderFrontCard(),
-			back: this.renderBackCard(),
+			front: frontCardData.el,
+			back: backCardData.el,
 		};
 		const html = $(await renderTemplate(PopoutCard.template, windowData));
 		const frontCard = html[0].querySelector('.flip-card-front');
 		const backCard = html[0].querySelector('.flip-card-back');
+
+		// Append Header
+		if (frontCardData.type === 'gen') frontCard.querySelector('.card-header').append(frontCard.querySelector('header'));
 
 		// Custom Header
 		const customHeader = target.getFlag('item-cards-dnd5e', 'headerCSS');
@@ -144,12 +149,15 @@ export class PopoutCard {
 		this.element = html;
 
 		// Changes sizes
+		const resizeEls = html.find('.card').add(html);
 		const frontCardSize = PopoutCard.calcSize(frontCard);
 		const backCardSize = PopoutCard.calcSize(backCard);
-		const height = Math.max(frontCardSize.height, backCardSize.height);
-		const width = Math.max(frontCardSize.width, backCardSize.width);
-		html.height(height);
-		html.width(width);
+		frontCardSize.img = +(frontCardData.type === 'img');
+		backCardSize.img = +(backCardData.type === 'img');
+		const height = Math.max(frontCardSize.height * frontCardSize.img, backCardSize.height * backCardSize.img);
+		const width = Math.max(frontCardSize.width * frontCardSize.img, backCardSize.width * backCardSize.img);
+		if (height) resizeEls.height(height);
+		if (width) resizeEls.width(width);
 
 		// Border radius
 		const borderRadius = target.getFlag('item-cards-dnd5e', 'borderRadius') || '15px';

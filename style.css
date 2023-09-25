@@ -8,8 +8,8 @@
     z-index: 99;
     position: absolute;
     transform: translate(-50%, -50%);
-    min-width: 200px;
-    min-height: 200px;
+    min-width: 240px;
+    min-height: 336px;
     perspective: 500px;
     transition: opacity 0.2s ease;
     opacity: 0;
@@ -23,6 +23,12 @@
     width: 100%;
     gap: 0.5rem;
     color: white;
+}
+
+#card-popout .card-header header {
+    position: inherit;
+    padding: 0.5rem;
+    width: auto;
 }
 
 #card-popout .flip-card-inner {
@@ -76,7 +82,6 @@
     background-color: inherit;
     color: white;
     text-overflow: ellipsis;
-    max-width: 180px;
     white-space: nowrap;
     overflow: hidden;
 }

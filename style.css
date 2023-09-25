@@ -108,6 +108,7 @@
 
 #card-popout .card-header {
     display: flex;
+    justify-content: space-between;
 }
 
 #card-popout .card-subtitle {

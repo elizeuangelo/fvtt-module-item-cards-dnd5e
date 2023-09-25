@@ -1,4 +1,4 @@
-import { shareImage } from './card-popout.js';
+import { PopoutCard } from './card-popout.js';
 
 // Logic
 const section = await getTemplate('modules/item-cards-dnd5e/templates/item-sheet-tab.hbs');
@@ -34,15 +34,13 @@ function addTab(sheet, html, data) {
 	);
 	tab.find('button.file-picker').on('click', (ev) => sheet._activateFilePicker(ev));
 	const flipped = sheet.document.getFlag('item-cards-dnd5e', 'flipped');
-	tab.find('#card-preview').on('click', () => renderCard(sheet.item.uuid, flipped, true));
+	tab.find('#card-preview').on('click', () => PopoutCard.createFromUuid({ uuid: sheet.item.uuid, flipped, preview: true }));
 }
 
 // -------------------------------- //
 Hooks.on('renderItemSheet', addTab);
 Hooks.on('dnd5e.displayCard', (item) => {
-	const uuid = item.uuid,
-		flipped = item.getFlag('item-cards-dnd5e', 'flipped'),
-		preview = false;
-	renderCard(uuid, flipped, preview);
-	shareImage({ uuid, flipped, preview });
+	const options = { uuid: item.uuid, flipped: item.getFlag('item-cards-dnd5e', 'flipped'), preview: false, item };
+	const card = PopoutCard.createFromItem(options);
+	card.shareImage(options);
 });

@@ -21,12 +21,14 @@ export class PopoutCard {
 		if (uuid in PopoutCard.items) return PopoutCard.items[uuid].render({ flipped, preview });
 		const item = await fromUuid(uuid);
 		const card = new this(item);
-		return card.render({ flipped, preview });
+		card.render({ flipped, preview });
+		return card;
 	}
-	static async createFromItem({ item, flipped = false, preview = false }) {
+	static createFromItem({ item, flipped = false, preview = false }) {
 		if (item.uuid in PopoutCard.items) return PopoutCard.items[item.uuid].render({ flipped, preview });
 		const card = new this(item);
-		return card.render({ flipped, preview });
+		card.render({ flipped, preview });
+		return card;
 	}
 	constructor(item) {
 		this.item = item;
@@ -51,10 +53,10 @@ export class PopoutCard {
 				class: 'share-image',
 				icon: 'fas fa-eye',
 				onclick: () =>
-					shareImage({
-						uuid: element[0].dataset.uuid,
-						title: element[0].dataset.title,
-						flipped: element[0].classList.contains('flipped'),
+					this.shareImage({
+						uuid: this.element[0].dataset.uuid,
+						title: this.element[0].dataset.title,
+						flipped: this.element[0].classList.contains('flipped'),
 						preview: true,
 					}),
 			});
@@ -223,16 +225,18 @@ export class PopoutCard {
 	}
 
 	shareImage({ flipped, preview } = { flipped: this.item.getFlag('item-cards-dnd5e', 'flipped'), preview: false }) {
+		const viewers = game.users.contents.filter((u) => u.viewedScene === game.user.viewedScene).map((u) => u.id);
 		game.socket.emit('module.item-cards-dnd5e', {
 			uuid: this.item.uuid,
-			flipped: options.flipped,
-			preview: options.preview,
+			flipped,
+			preview,
+			viewers,
 		});
 		ui.notifications.info(
 			game.i18n.format('JOURNAL.ActionShowSuccess', {
 				mode: 'image',
 				title: this.item.name,
-				which: 'all',
+				which: 'some',
 			})
 		);
 	}
@@ -249,7 +253,8 @@ export class PopoutCard {
 
 // -------------------------------- //
 Hooks.once('ready', () =>
-	game.socket.on('module.item-cards-dnd5e', ({ uuid, flipped, preview }) =>
-		PopoutCard.createFromUuid({ uuid, flipped, preview })
-	)
+	game.socket.on('module.item-cards-dnd5e', ({ uuid, flipped, preview, viewers }) => {
+		if (!viewers.includes(game.userId)) return;
+		PopoutCard.createFromUuid({ uuid, flipped, preview });
+	})
 );

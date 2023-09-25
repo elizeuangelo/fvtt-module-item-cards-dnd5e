@@ -33,7 +33,7 @@ function addTab(sheet, html, data) {
 
 	// Listeners
 	menu.on('click', () => setTimeout(() => sheet.setPosition({ height: 'auto' }), 0));
-	tab.find('input,textarea').on('change', () =>
+	tab.find('input,select,textarea').on('change', () =>
 		Hooks.once('renderItemSheet', () => sheet.element.find('nav [data-tab=item-card]')[0].click())
 	);
 	tab.find('button.file-picker').on('click', (ev) => sheet._activateFilePicker(ev));

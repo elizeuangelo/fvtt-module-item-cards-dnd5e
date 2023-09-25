@@ -182,7 +182,7 @@ export class PopoutCard {
 				pos_start = deepClone(this.position);
 				clearTimeout(this.closeTimeout);
 			});
-			html.on('click', (event) => {
+			html.on(getSetting('doubleClick') ? 'dblclick' : 'click', (event) => {
 				if (!objectsEqual(this.position, pos_start)) return;
 				event.preventDefault();
 				event.stopPropagation();

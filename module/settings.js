@@ -10,6 +10,14 @@ const settings = {
 		type: Boolean,
 		default: true,
 	},
+	doubleClick: {
+		name: 'Flip on Double Click',
+		hint: 'Flip cards only on double clicks.',
+		scope: 'client',
+		config: true,
+		type: Boolean,
+		default: true,
+	},
 	autoClose: {
 		name: 'Automatically Close Cards',
 		hint: 'Time in miliseconds for the cards to disappear. 0 to disable.',
@@ -18,7 +26,7 @@ const settings = {
 		type: Number,
 		default: 6000,
 	},
-	showCards: {
+	showCardsPCs: {
 		name: 'Show Cards PC (server)',
 		hint: 'Show item cards when PCs use items.',
 		scope: 'world',
@@ -26,7 +34,7 @@ const settings = {
 		type: Boolean,
 		default: true,
 	},
-	showCards: {
+	showCardsNPCs: {
 		name: 'Show Cards NPC (server)',
 		hint: 'Show item cards when NPCs use items.',
 		scope: 'world',

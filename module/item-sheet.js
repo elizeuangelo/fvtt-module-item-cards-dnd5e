@@ -5,10 +5,13 @@ const section = await getTemplate('modules/item-cards-dnd5e/templates/item-sheet
 function addTab(sheet, html, data) {
 	if (!game.user.isGM) return;
 	const tab = $(
-		section(data, {
-			allowProtoMethodsByDefault: true,
-			allowProtoPropertiesByDefault: true,
-		})
+		section(
+			{ ...data, specialMember: false },
+			{
+				allowProtoMethodsByDefault: true,
+				allowProtoPropertiesByDefault: true,
+			}
+		)
 	);
 	const body = html.find('.sheet-body');
 	body.append(tab);

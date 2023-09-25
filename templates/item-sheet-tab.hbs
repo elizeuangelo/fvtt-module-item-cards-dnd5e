@@ -60,7 +60,7 @@
 	</div>
 
     <h3 class="form-header">Customize Card Image</h3>
-    <div class="form-group">
+    <div class="form-group" {{#if specialMember}}data-link-keep{{/if}}>
 		<label>Front</label>
 		<div class="form-fields">
             {{filePicker target="flags.item-cards-dnd5e.frontImage" type="imagevideo"}}
@@ -71,10 +71,11 @@
 
     <div class="form-group">
 		<label>Back</label>
-		<div class="form-fields">
+		<div class="form-fields" {{#if specialMember}}data-link-keep{{/if}}>
             {{filePicker target="flags.item-cards-dnd5e.backImage" type="imagevideo"}}
             <input class="image" type="text" name="flags.item-cards-dnd5e.backImage"
                     value="{{data.flags.item-cards-dnd5e.backImage}}"/>
         </div>
 	</div>
+    
 </div>

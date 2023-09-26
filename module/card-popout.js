@@ -96,24 +96,24 @@ export class PopoutCard {
 			this.element[0].style.zIndex = this.position.zIndex;
 		}
 	}
-	renderFrontCard() {
+	async renderFrontCard() {
 		const customImage =
 			this.item.getFlag('item-cards-dnd5e', 'memberFrontImage') || this.item.getFlag('item-cards-dnd5e', 'frontImage');
 		if (customImage) return { type: 'img', el: /*html*/ `<img src="${customImage}">` };
-		return { type: 'gen', el: createFrontCard(this.item) };
+		return { type: 'gen', el: await createFrontCard(this.item) };
 	}
-	renderBackCard() {
+	async renderBackCard() {
 		const customImage =
 			this.item.getFlag('item-cards-dnd5e', 'memberBackImage') || this.item.getFlag('item-cards-dnd5e', 'backImage');
 		if (customImage) return { type: 'img', el: /*html*/ `<img src="${customImage}">` };
-		return { type: 'gen', el: createBackCard(this.item) };
+		return { type: 'gen', el: await createBackCard(this.item) };
 	}
 	async render({ flipped = false, preview = false } = {}) {
 		if (!getSetting('showCards')) return;
 		if (this.element) this.element.remove();
 		const target = this.item;
-		const frontCardData = this.renderFrontCard();
-		const backCardData = this.renderBackCard();
+		const frontCardData = await this.renderFrontCard();
+		const backCardData = await this.renderBackCard();
 		const windowData = {
 			target,
 			uuid: target.uuid,

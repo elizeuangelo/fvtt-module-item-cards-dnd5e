@@ -60,14 +60,11 @@ function defaultOptions(item) {
 function firstLetterUpperCase(str) {
 	return str.replace(str[0], str[0].toUpperCase());
 }
-function removeTags(str) {
-	return str
-		.replace(/^<p>(.*)<\/p>$/s, '$1')
-		.replace(/@[a-zA-Z]+\[[a-zA-Z.0-9]+\]{(.+?)}/g, '<b>$1</b>')
-		.replace(/\[\[\/r (.+?)]]|([0-9]+d[0-9+ ]+)/g, '<b>$1$2</b>');
+async function removeTags(str) {
+	return await TextEditor.enrichHTML(str.replace(/^<p>(.*)<\/p>$/s, '$1'));
 }
 
-function generateSpell(item) {
+async function generateSpell(item) {
 	const card = {
 		color: 'saddlebrown',
 		contents: [
@@ -85,13 +82,13 @@ function generateSpell(item) {
 				: '',
 			'rule',
 			'fill | 2',
-			item.system.description.value ? `text | ${removeTags(item.system.description.value)}` : '',
+			item.system.description.value ? `text | ${await removeTags(item.system.description.value)}` : '',
 			'fill | 3',
 		],
 	};
 	return { ...defaultCard(item), ...card };
 }
-function generateWeapon(item) {
+async function generateWeapon(item) {
 	const isRanged = item.system.actionType === 'rwak' || item.system.properties.thr;
 	const properties = Object.entries(item.system.properties)
 		.map(([k, v]) => (v ? CONFIG.DND5E.weaponProperties[k] : undefined))
@@ -114,13 +111,13 @@ function generateWeapon(item) {
 			item.labels.range && isRanged ? `property | Range | ${item.labels.range}` : '',
 			'rule',
 			'fill | 2',
-			item.system.description.value ? `text | ${removeTags(item.system.description.value)}` : '',
+			item.system.description.value ? `text | ${await removeTags(item.system.description.value)}` : '',
 			'fill | 3',
 		],
 	};
 	return { ...defaultCard(item), ...card };
 }
-function generateArmor(item) {
+async function generateArmor(item) {
 	const card = {
 		contents: [
 			`subtitle | ${firstLetterUpperCase(item.system.armor.type)} armor ${
@@ -132,13 +129,13 @@ function generateArmor(item) {
 			item.system.stealth ? `property | Stealth| Disadvantage` : '',
 			'rule',
 			'fill | 2',
-			item.system.description.value ? `text | ${removeTags(item.system.description.value)}` : '',
+			item.system.description.value ? `text | ${await removeTags(item.system.description.value)}` : '',
 			'fill | 3',
 		],
 	};
 	return { ...defaultCard(item), ...card };
 }
-function generateBasic(item, color = 'dimgray') {
+async function generateBasic(item, color = 'dimgray') {
 	const charged = item.system.uses.max > 1;
 	const prop = charged;
 	const card = {
@@ -155,7 +152,7 @@ function generateBasic(item, color = 'dimgray') {
 			item.system.uses.recovery ? `property | Recovery | ${item.system.uses.recovery}` : '',
 			prop ? 'rule' : '',
 			'fill | 2',
-			item.system.description.value ? `text | ${removeTags(item.system.description.value)}` : '',
+			item.system.description.value ? `text | ${await removeTags(item.system.description.value)}` : '',
 			'fill | 3',
 		],
 	};
@@ -175,15 +172,19 @@ export const CARD_TYPES = {
 	consumable: generateBasic,
 	feat: (item) => generateBasic(item, 'indigo'),
 };
-export function createFrontCard(item) {
+export async function createFrontCard(item) {
 	const options = { ...defaultOptions(item) };
 	const contents = item.getFlag('item-cards-dnd5e', 'contents');
-	const card = contents ? contentCard(item, contents.split('\n')) : CARD_TYPES[item.type]?.(item) ?? generateBasic(item);
+	const card = contents
+		? contentCard(item, contents.split('\n'))
+		: await (CARD_TYPES[item.type]?.(item) ?? generateBasic(item));
 	return card_generate_front(card, options);
 }
-export function createBackCard(item) {
+export async function createBackCard(item) {
 	const options = { ...defaultOptions(item) };
 	const contents = item.getFlag('item-cards-dnd5e', 'contents');
-	const card = contents ? contentCard(item, contents.split('\n')) : CARD_TYPES[item.type]?.(item) ?? generateBasic(item);
+	const card = contents
+		? contentCard(item, contents.split('\n'))
+		: await (CARD_TYPES[item.type]?.(item) ?? generateBasic(item));
 	return card_generate_back(card, options);
 }

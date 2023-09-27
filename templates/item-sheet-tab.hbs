@@ -1,4 +1,5 @@
 <div class="tab item-card" data-group="primary" data-tab="item-card">
+    {{#if isGM}}
 	<div class="form-group">
 		<label>Show Card on Item Use</label>
         <select name="flags.item-cards-dnd5e.active">
@@ -15,7 +16,7 @@
 		<label>Open Flipped</label>
 		<input type="checkbox" name="flags.item-cards-dnd5e.flipped" {{checked data.flags.item-cards-dnd5e.flipped}} />
 	</div>
-
+    {{/if}}
     <hr>
 
     <div class="form-group">
@@ -24,7 +25,7 @@
 		    <button style="flex:1" type="button" id="card-preview"><i class="fas fa-image"></i> Preview</button>
         </div>
 	</div>
-
+    {{#if isGM}}
     <div class="form-group">
         <label>Background Card Color</label>
         <div class="form-fields">
@@ -81,7 +82,7 @@
                     value="{{data.flags.item-cards-dnd5e.backImage}}"/>
         </div>
 	</div>
-
+    {{/if}}
     <h3 class="form-header">Customize Card Image (Member)</h3>
     <div class="form-group">
 		<label>Front</label>

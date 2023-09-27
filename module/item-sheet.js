@@ -5,9 +5,10 @@ import { getSetting } from './settings.js';
 const section = await getTemplate('modules/item-cards-dnd5e/templates/item-sheet-tab.hbs');
 function addTab(sheet, html, data) {
 	if (!sheet._tabs?.[0]?._nav) return;
+	const specialMember = specialMembership();
 	const tab = $(
 		section(
-			{ ...data, specialMember: specialMembership() },
+			{ ...data, specialMember, isGM: game.user.isGM },
 			{
 				allowProtoMethodsByDefault: true,
 				allowProtoPropertiesByDefault: true,

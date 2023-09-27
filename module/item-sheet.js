@@ -4,11 +4,10 @@ import { getSetting } from './settings.js';
 // Logic
 const section = await getTemplate('modules/item-cards-dnd5e/templates/item-sheet-tab.hbs');
 function addTab(sheet, html, data) {
-	const specialMembership = getSetting('specialMembership');
-	if (!game.user.isGM && specialMembership && !game.membership?.hasPermissionSync(specialMembership)) return;
+	if (!sheet._tabs?.[0]?._nav) return;
 	const tab = $(
 		section(
-			{ ...data, specialMember: minimumMembership() },
+			{ ...data, specialMember: specialMembership() },
 			{
 				allowProtoMethodsByDefault: true,
 				allowProtoPropertiesByDefault: true,
@@ -42,9 +41,9 @@ function addTab(sheet, html, data) {
 	tab.find('#card-preview').on('click', () => PopoutCard.createFromUuid({ uuid: sheet.item.uuid, flipped, preview: true }));
 }
 
-function minimumMembership() {
+function specialMembership() {
 	const membership = getSetting('specialMembership');
-	return membership && game.membership?.hasPermissionSync(membership);
+	return Boolean(membership && game.membership?.hasPermissionSync(membership));
 }
 
 // -------------------------------- //

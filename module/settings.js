@@ -71,7 +71,8 @@ Hooks.once('setup', () => {
 		config: true,
 		type: String,
 		choices: Object.fromEntries([
-			['NONE', '<None>'],
+			['', '<None>'],
+			['NONE', '<All>'],
 			...game.settings.get('donation-tracker', 'membershipLevels')?.levels?.map((e) => [e.id, e.name]),
 		]),
 		default: '',

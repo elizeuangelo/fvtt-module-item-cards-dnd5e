@@ -4,7 +4,8 @@ import { getSetting } from './settings.js';
 // Logic
 const section = await getTemplate('modules/item-cards-dnd5e/templates/item-sheet-tab.hbs');
 function addTab(sheet, html, data) {
-	if (!game.user.isGM) return;
+	const specialMembership = getSetting('specialMembership');
+	if (!game.user.isGM && !game.membership?.hasPermissionSync(specialMembership)) return;
 	const tab = $(
 		section(
 			{ ...data, specialMember: minimumMembership() },

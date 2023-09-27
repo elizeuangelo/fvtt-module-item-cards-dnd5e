@@ -26,6 +26,20 @@ const settings = {
 		type: Number,
 		default: 6000,
 	},
+	defaultPosition: {
+		name: 'Card Default Position',
+		scope: 'client',
+		config: true,
+		type: String,
+		default: '',
+	},
+	defaultPositionServer: {
+		name: 'Card Default Position (server)',
+		scope: 'world',
+		config: true,
+		type: String,
+		default: '',
+	},
 	showCardsPlayers: {
 		name: 'Show Cards PC (server)',
 		hint: 'Show item cards when players use items.',

@@ -1,5 +1,5 @@
 import { createBackCard, createFrontCard } from './generate-card.js';
-import { getSetting } from './settings.js';
+import { getSetting, setSetting } from './settings.js';
 
 export class PopoutCard {
 	static template = 'modules/item-cards-dnd5e/templates/card-popout.hbs';
@@ -32,14 +32,25 @@ export class PopoutCard {
 	}
 	constructor(item) {
 		this.item = item;
-		this.position = {
-			left: ~~(window.innerWidth / 2),
-			top: ~~(window.innerHeight / 2),
-		};
+		const defaultPos = getSetting('defaultPosition') || getSetting('defaultPositionServer');
+		this.position = defaultPos
+			? JSON.parse(defaultPos)
+			: {
+					left: ~~(window.innerWidth / 2),
+					top: ~~(window.innerHeight / 2),
+			  };
 		this.closeTimeout = 0;
 	}
 	_getHeaderButtons() {
 		const buttons = [
+			{
+				tooltip: 'Set Position',
+				class: 'set-position',
+				icon: 'fas fa-plus',
+				onclick: () => {
+					this.savePosition().then(() => ui.notifications.info('Position saved!'));
+				},
+			},
 			{
 				tooltip: 'Close',
 				class: 'close',
@@ -95,6 +106,9 @@ export class PopoutCard {
 			this.position.zIndex = Math.min(++_maxZ, 99999);
 			this.element[0].style.zIndex = this.position.zIndex;
 		}
+	}
+	savePosition({ left, top } = this.position) {
+		return setSetting('defaultPosition', JSON.stringify({ left, top }));
 	}
 	async renderFrontCard() {
 		const customImage =

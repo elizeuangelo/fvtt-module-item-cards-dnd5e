@@ -83,12 +83,14 @@
         </div>
 	</div>
     {{/if}}
+    
+    {{#if specialMember}}
     <h3 class="form-header">Customize Card Image (Member)</h3>
     <div class="form-group">
 		<label>Front</label>
 		<div class="form-fields">
             {{filePicker target="flags.item-cards-dnd5e.memberFrontImage" type="imagevideo"}}
-            <input class="image" type="text" name="flags.item-cards-dnd5e.memberFrontImage" {{#if specialMember}}data-link-keep{{/if}}
+            <input class="image" type="text" name="flags.item-cards-dnd5e.memberFrontImage" data-link-keep
                     value="{{data.flags.item-cards-dnd5e.memberFrontImage}}"/>
         </div>
 	</div>
@@ -97,9 +99,10 @@
 		<label>Back</label>
 		<div class="form-fields">
             {{filePicker target="flags.item-cards-dnd5e.memberBackImage" type="imagevideo"}}
-            <input class="image" type="text" name="flags.item-cards-dnd5e.memberBackImage" {{#if specialMember}}data-link-keep{{/if}}
+            <input class="image" type="text" name="flags.item-cards-dnd5e.memberBackImage" data-link-keep
                     value="{{data.flags.item-cards-dnd5e.memberBackImage}}"/>
         </div>
 	</div>
+    {{/if}}
     
 </div>

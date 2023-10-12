@@ -65,6 +65,17 @@
 	</div>
 
     <h3 class="form-header">Customize Card Image</h3>
+	<div class="form-group">
+		<label>Automatically Match Image</label>
+        <select name="flags.item-cards-dnd5e.matchCard">
+            <option value="" {{#if (eq data.flags.item-cards-dnd5e.matchCard "")}}selected{{/if}}>Default</option>
+            <option value="true" {{#if (eq data.flags.item-cards-dnd5e.matchCard "true")}}selected{{/if}}>Match</option>
+            <option value="false" {{#if (eq data.flags.item-cards-dnd5e.matchCard "false")}}selected{{/if}}>Don't Match</option>
+        </select>
+        <p class="hint">
+			Automatically match the item image to the server configured folder.
+		</p>
+	</div>
     <div class="form-group">
 		<label>Front</label>
 		<div class="form-fields">

@@ -1,5 +1,6 @@
 import { createBackCard, createFrontCard } from './generate-card.js';
 import { getSetting, setSetting } from './settings.js';
+import DirectoryPicker from '../lib/DirectoryPicker.js';
 
 export class PopoutCard {
 	static template = 'modules/item-cards-dnd5e/templates/card-popout.hbs';
@@ -29,6 +30,23 @@ export class PopoutCard {
 		const card = new this(item);
 		card.render({ flipped, preview });
 		return card;
+	}
+	static _folderImages;
+	static async getFolderImages(target = DirectoryPicker.parse(getSetting('matchCardFolder')).current) {
+		if (this._folderImages?.target === target) return this._folderImages.files;
+		const data = await FilePicker.browse('data', target, {
+			extensions: ['.apng', '.avif', '.bmp', '.gif', '.jpg', '.jpeg', '.png', '.svg', '.tiff', '.webp'],
+		});
+		const files = data.files;
+
+		// Recursevely search in subfolders as well
+		for (const dir of data.dirs) {
+			for (const file of await this.getFolderImages(dir)) files.push(file);
+		}
+
+		this._folderImages = { target, files };
+
+		return files;
 	}
 	constructor(item) {
 		this.item = item;
@@ -117,8 +135,28 @@ export class PopoutCard {
 		return { type: 'gen', el: await createFrontCard(this.item) };
 	}
 	async renderBackCard() {
+		let autoMatch = this.item.getFlag('item-cards-dnd5e', 'matchCard');
+		if (!['true', 'false'].includes(autoMatch)) autoMatch = getSetting('matchCard');
+		let matchImage;
+		if (autoMatch) {
+			const images = await PopoutCard.getFolderImages();
+			const rgx = /^(?:.*\/|)(.+?)\.[a-zA-Z0-9]+$/;
+			const replaceRgx = /[-_ 0-9]+/g;
+			const itemName = this.item.name.trim().toLowerCase().replace(replaceRgx, '');
+			for (const file of images) {
+				const match = file.match(rgx);
+				if (!match) continue;
+				const fileName = decodeURI(match[1]).trim().toLowerCase().replace(replaceRgx, '');
+				if (fileName === itemName) {
+					matchImage = file;
+					break;
+				}
+			}
+		}
 		const customImage =
-			this.item.getFlag('item-cards-dnd5e', 'memberBackImage') || this.item.getFlag('item-cards-dnd5e', 'backImage');
+			matchImage ||
+			this.item.getFlag('item-cards-dnd5e', 'memberBackImage') ||
+			this.item.getFlag('item-cards-dnd5e', 'backImage');
 		if (customImage) return { type: 'img', el: /*html*/ `<img src="${customImage}">` };
 		return { type: 'gen', el: await createBackCard(this.item) };
 	}
@@ -185,7 +223,7 @@ export class PopoutCard {
 		this.bringToTop();
 
 		// Insert Icon Image
-		if (!target.getFlag('item-cards-dnd5e', 'backImage') && target.img) {
+		if (backCardData.type === 'gen' && target.img) {
 			const icon = backCard.querySelector('.card-back-icon');
 			icon.style.width = icon.style.height = '87.5px';
 			icon.insertAdjacentHTML('beforeend', `<img src="${target.img}">`);
@@ -276,9 +314,10 @@ export class PopoutCard {
 }
 
 // -------------------------------- //
-Hooks.once('ready', () =>
+Hooks.once('ready', () => {
+	PopoutCard.getFolderImages();
 	game.socket.on('module.item-cards-dnd5e', ({ uuid, flipped, preview, viewers }) => {
 		if (!viewers.includes(game.userId)) return;
 		PopoutCard.createFromUuid({ uuid, flipped, preview });
-	})
-);
+	});
+});

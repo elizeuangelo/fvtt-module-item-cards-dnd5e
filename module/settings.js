@@ -1,3 +1,6 @@
+import DirectoryPicker from '../lib/DirectoryPicker.js';
+import { PopoutCard } from './card-popout.js';
+
 export const MODULE_ID = 'item-cards-dnd5e';
 export const PATH = `modules/${MODULE_ID}`;
 
@@ -55,6 +58,23 @@ const settings = {
 		config: true,
 		type: Boolean,
 		default: false,
+	},
+	matchCard: {
+		name: 'Match Cards (server)',
+		hint: 'Automatically match item cards to the configured folder.',
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: false,
+	},
+	matchCardFolder: {
+		name: 'Match Cards Folder (server)',
+		scope: 'world',
+		config: '[data]',
+		type: DirectoryPicker.Directory,
+		config: true,
+		default: '[data]',
+		onChange: () => PopoutCard.getFolderImages(),
 	},
 };
 export function getSetting(name) {

@@ -138,7 +138,7 @@ export class PopoutCard {
 		let autoMatch = this.item.getFlag('item-cards-dnd5e', 'matchCard');
 		if (!['true', 'false'].includes(autoMatch)) autoMatch = getSetting('matchCard');
 		let matchImage;
-		if (autoMatch) {
+		if ([true, 'true'].includes(autoMatch)) {
 			const images = await PopoutCard.getFolderImages();
 			const rgx = /^(?:.*\/|)(.+?)\.[a-zA-Z0-9]+$/;
 			const replaceRgx = /[-_ 0-9]+/g;

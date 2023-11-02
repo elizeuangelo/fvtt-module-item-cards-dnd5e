@@ -61,7 +61,7 @@ function firstLetterUpperCase(str) {
 	return str.replace(str[0], str[0].toUpperCase());
 }
 async function removeTags(str) {
-	return await TextEditor.enrichHTML(str.replace(/^<p>(.*)<\/p>$/s, '$1'));
+	return await TextEditor.enrichHTML(str.replace(/^<p>(.*)<\/p>$/s, '$1'), { async: true, secrets: true });
 }
 
 async function generateSpell(item) {

@@ -43,8 +43,12 @@ function addTab(sheet, html, data) {
 }
 
 function specialMembership() {
-	const membership = getSetting('specialMembership');
-	return Boolean(membership && game.membership?.hasPermissionSync(membership));
+	try {
+		const membership = getSetting('specialMembership');
+		return Boolean(membership && game.membership?.hasPermissionSync(membership));
+	} catch {
+		return false;
+	}
 }
 
 // -------------------------------- //

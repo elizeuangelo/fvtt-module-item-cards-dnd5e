@@ -84,19 +84,21 @@ export function setSetting(name, value) {
 	return game.settings.set(MODULE_ID, name, value);
 }
 Hooks.once('setup', () => {
-	settings.specialMembership = {
-		name: 'Special Membership (server)',
-		hint: 'If using the Donation Membership API, allow members with at least the specified membership to change the cards images.',
-		scope: 'world',
-		config: true,
-		type: String,
-		choices: Object.fromEntries([
-			['', '<None>'],
-			['NONE', '<All>'],
-			...game.settings.get('donation-tracker', 'membershipLevels')?.levels?.map((e) => [e.id, e.name]),
-		]),
-		default: '',
-	};
+	try {
+		settings.specialMembership = {
+			name: 'Special Membership (server)',
+			hint: 'If using the Donation Membership API, allow members with at least the specified membership to change the cards images.',
+			scope: 'world',
+			config: true,
+			type: String,
+			choices: Object.fromEntries([
+				['', '<None>'],
+				['NONE', '<All>'],
+				...game.settings.get('donation-tracker', 'membershipLevels').levels?.map((e) => [e.id, e.name]),
+			]),
+			default: '',
+		};
+	} catch {}
 
 	for (const [key, setting] of Object.entries(settings)) {
 		game.settings.register(MODULE_ID, key, setting);

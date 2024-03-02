@@ -76,7 +76,7 @@ async function generateSpell(item) {
 				item.labels.materials ? ` (${item.labels.materials.toLowerCase()})` : ''
 			}`,
 			item.labels.duration
-				? `property | Duration | ${item.system.components.concentration ? `Concentration, up to ` : ''}${
+				? `property | Duration | ${item.system.properties.has('concentration') ? `Concentration, up to ` : ''}${
 						item.labels.duration || 'Instantaneous'
 				  }`
 				: '',
@@ -96,7 +96,7 @@ async function generateWeapon(item) {
 		.join(', ');
 	const card = {
 		contents: [
-			`subtitle | ${firstLetterUpperCase(CONFIG.DND5E.weaponTypes[item.system.weaponType].toLowerCase())} weapon ${
+			`subtitle | ${firstLetterUpperCase(item.system.type.label.toLowerCase())} weapon ${
 				item.system.price?.value ? `(${item.system.price.value.toLocaleString()}${item.system.price.denomination})` : ''
 			}`,
 			'rule',
@@ -120,13 +120,13 @@ async function generateWeapon(item) {
 async function generateArmor(item) {
 	const card = {
 		contents: [
-			`subtitle | ${firstLetterUpperCase(item.system.armor.type)} armor ${
+			`subtitle | ${firstLetterUpperCase(item.system.type.label.toLowerCase())} ${
 				item.system.price ? `(${item.system.price.value.toLocaleString()}${item.system.price.denomination})` : ''
 			}`,
 			'rule',
 			`property | AC | ${item.system.armor.value}${item.system.armor.dex ? ` + Dex (max ${item.system.armor.dex})` : ''}`,
 			item.system.strength ? `property | Strenght required | ${item.system.strength}` : '',
-			item.system.stealth ? `property | Stealth| Disadvantage` : '',
+			item.system.stealthDisadvantage ? `property | Stealth| Disadvantage` : '',
 			'rule',
 			'fill | 2',
 			item.system.description.value ? `text | ${await removeTags(item.system.description.value)}` : '',
@@ -136,7 +136,7 @@ async function generateArmor(item) {
 	return { ...defaultCard(item), ...card };
 }
 async function generateBasic(item, color = 'dimgray') {
-	const charged = item.system.uses.max > 1;
+	const charged = item.system.uses?.max > 1;
 	const prop = charged;
 	const card = {
 		color,
@@ -149,7 +149,7 @@ async function generateBasic(item, color = 'dimgray') {
 			}`,
 			'rule',
 			charged ? `property | Maximum charges | ${item.system.uses.max}` : '',
-			item.system.uses.recovery ? `property | Recovery | ${item.system.uses.recovery}` : '',
+			item.system.uses?.recovery ? `property | Recovery | ${item.system.uses.recovery}` : '',
 			prop ? 'rule' : '',
 			'fill | 2',
 			item.system.description.value ? `text | ${await removeTags(item.system.description.value)}` : '',

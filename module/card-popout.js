@@ -105,7 +105,7 @@ export class PopoutCard {
 			const scaledWidth = width * scale;
 			const tarL = Number.isFinite(left) ? left : (window.innerWidth - scaledWidth) / 2;
 			const maxL = Math.max(window.innerWidth - scaledWidth, 0);
-			currentPosition.left = left = Math.clamped(tarL, width / 2, maxL);
+			currentPosition.left = left = Math.clamp(tarL, width / 2, maxL);
 			el.style.left = `${left}px`;
 		}
 
@@ -114,7 +114,7 @@ export class PopoutCard {
 			const scaledHeight = height * scale;
 			const tarT = Number.isFinite(top) ? top : (window.innerHeight - scaledHeight) / 2;
 			const maxT = Math.max(window.innerHeight - scaledHeight, 0);
-			currentPosition.top = Math.clamped(tarT, height / 2, maxT);
+			currentPosition.top = Math.clamp(tarT, height / 2, maxT);
 			el.style.top = `${currentPosition.top}px`;
 		}
 	}
@@ -243,17 +243,17 @@ export class PopoutCard {
 			});
 			let pos_start;
 			html.on('pointerdown', () => {
-				pos_start = deepClone(this.position);
+				pos_start = foundry.utils.deepClone(this.position);
 				clearTimeout(this.closeTimeout);
 			});
 			html.on(getSetting('doubleClick') ? 'dblclick' : 'click', (event) => {
-				if (!objectsEqual(this.position, pos_start)) return;
+				if (!foundry.utils.objectsEqual(this.position, pos_start)) return;
 				event.preventDefault();
 				event.stopPropagation();
 				this.flipCard();
 			});
 			html.on('contextmenu', (event) => {
-				if (!objectsEqual(this.position, pos_start)) return;
+				if (!foundry.utils.objectsEqual(this.position, pos_start)) return;
 				event.preventDefault();
 				event.stopPropagation();
 				this.close();

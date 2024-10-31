@@ -3,9 +3,9 @@
 	<div class="form-group">
 		<label>Show Card on Item Use</label>
         <select name="flags.item-cards-dnd5e.active">
-            <option value="" {{#if (eq data.flags.item-cards-dnd5e.active "")}}selected{{/if}}>Default</option>
-            <option value="true" {{#if (eq data.flags.item-cards-dnd5e.active "true")}}selected{{/if}}>Show</option>
-            <option value="false" {{#if (eq data.flags.item-cards-dnd5e.active "false")}}selected{{/if}}>Hide</option>
+            <option value="" {{#if (eq item.flags.item-cards-dnd5e.active "")}}selected{{/if}}>Default</option>
+            <option value="true" {{#if (eq item.flags.item-cards-dnd5e.active "true")}}selected{{/if}}>Show</option>
+            <option value="false" {{#if (eq item.flags.item-cards-dnd5e.active "false")}}selected{{/if}}>Hide</option>
         </select>
         <p class="hint">
 			Automatically show this item's card when this item is used.
@@ -14,7 +14,7 @@
 
     <div class="form-group">
 		<label>Open Flipped</label>
-		<input type="checkbox" name="flags.item-cards-dnd5e.flipped" {{checked data.flags.item-cards-dnd5e.flipped}} />
+		<input type="checkbox" name="flags.item-cards-dnd5e.flipped" {{checked item.flags.item-cards-dnd5e.flipped}} />
 	</div>
     {{/if}}
     <hr>
@@ -29,38 +29,38 @@
     <div class="form-group">
         <label>Background Card Color</label>
         <div class="form-fields">
-            {{colorPicker name="flags.item-cards-dnd5e.color" value=data.flags.item-cards-dnd5e.color}}
+            <color-picker name="flags.item-cards-dnd5e.color" value="{{item.flags.item-cards-dnd5e.color}}"></color-picker>
         </div>
     </div>
 
     <div class="form-group">
 		<label>Card Border Radius</label>
         <div class="form-fields">
-            <input type="text" name="flags.item-cards-dnd5e.borderRadius" value="{{data.flags.item-cards-dnd5e.borderRadius}}" />
+            <input type="text" name="flags.item-cards-dnd5e.borderRadius" value="{{item.flags.item-cards-dnd5e.borderRadius}}" />
         </div>
 	</div>
 
     <div class="form-group">
         <label>Header CSS</label>
         <div class="form-fields">
-            <input type="text" name="flags.item-cards-dnd5e.headerCSS" value="{{data.flags.item-cards-dnd5e.headerCSS}}">
+            <input type="text" name="flags.item-cards-dnd5e.headerCSS" value="{{item.flags.item-cards-dnd5e.headerCSS}}">
         </div>
         <p class="hint">If you need to customize the card header.</p>
     </div>
 
     <div class="form-group">
 		<label>Remove Icon Border</label>
-		<input type="checkbox" name="flags.item-cards-dnd5e.iconBorder" {{checked data.flags.item-cards-dnd5e.iconBorder}} />
+		<input type="checkbox" name="flags.item-cards-dnd5e.iconBorder" {{checked item.flags.item-cards-dnd5e.iconBorder}} />
 	</div>
 
     <div class="form-group">
 		<label>Smaller Fonts</label>
-		<input type="checkbox" name="flags.item-cards-dnd5e.smallerFonts" {{checked data.flags.item-cards-dnd5e.smallerFonts}} />
+		<input type="checkbox" name="flags.item-cards-dnd5e.smallerFonts" {{checked item.flags.item-cards-dnd5e.smallerFonts}} />
 	</div>
 
     <div class="form-group">
 		<label>Contents</label>
-		<textarea name="flags.item-cards-dnd5e.contents"/>{{data.flags.item-cards-dnd5e.contents}}</textarea>
+		<textarea name="flags.item-cards-dnd5e.contents"/>{{item.flags.item-cards-dnd5e.contents}}</textarea>
         <p class="hint">Replace the content of the card with your own.</p>
 	</div>
 
@@ -68,9 +68,9 @@
 	<div class="form-group">
 		<label>Automatically Match Image</label>
         <select name="flags.item-cards-dnd5e.matchCard">
-            <option value="" {{#if (eq data.flags.item-cards-dnd5e.matchCard "")}}selected{{/if}}>Default</option>
-            <option value="true" {{#if (eq data.flags.item-cards-dnd5e.matchCard "true")}}selected{{/if}}>Match</option>
-            <option value="false" {{#if (eq data.flags.item-cards-dnd5e.matchCard "false")}}selected{{/if}}>Don't Match</option>
+            <option value="" {{#if (eq item.flags.item-cards-dnd5e.matchCard "")}}selected{{/if}}>Default</option>
+            <option value="true" {{#if (eq item.flags.item-cards-dnd5e.matchCard "true")}}selected{{/if}}>Match</option>
+            <option value="false" {{#if (eq item.flags.item-cards-dnd5e.matchCard "false")}}selected{{/if}}>Don't Match</option>
         </select>
         <p class="hint">
 			Automatically match the item image to the server configured folder.
@@ -79,18 +79,14 @@
     <div class="form-group">
 		<label>Front</label>
 		<div class="form-fields">
-            {{filePicker target="flags.item-cards-dnd5e.frontImage" type="imagevideo"}}
-            <input class="image" type="text" name="flags.item-cards-dnd5e.frontImage"
-                    value="{{data.flags.item-cards-dnd5e.frontImage}}"/>
+            <file-picker name="flags.item-cards-dnd5e.frontImage" type="imagevideo" value="{{item.flags.item-cards-dnd5e.frontImage}}"></file-picker>
         </div>
 	</div>
 
     <div class="form-group">
 		<label>Back</label>
 		<div class="form-fields">
-            {{filePicker target="flags.item-cards-dnd5e.backImage" type="imagevideo"}}
-            <input class="image" type="text" name="flags.item-cards-dnd5e.backImage"
-                    value="{{data.flags.item-cards-dnd5e.backImage}}"/>
+            <file-picker name="flags.item-cards-dnd5e.backImage" type="imagevideo" value="{{item.flags.item-cards-dnd5e.backImage}}"></file-picker>
         </div>
 	</div>
     {{/if}}
@@ -100,18 +96,14 @@
     <div class="form-group">
 		<label>Front</label>
 		<div class="form-fields">
-            {{filePicker target="flags.item-cards-dnd5e.memberFrontImage" type="imagevideo"}}
-            <input class="image" type="text" name="flags.item-cards-dnd5e.memberFrontImage" data-link-keep
-                    value="{{data.flags.item-cards-dnd5e.memberFrontImage}}"/>
+            <file-picker name="flags.item-cards-dnd5e.memberFrontImage" type="imagevideo" value="{{item.flags.item-cards-dnd5e.memberFrontImage}}"></file-picker>
         </div>
 	</div>
 
     <div class="form-group">
 		<label>Back</label>
 		<div class="form-fields">
-            {{filePicker target="flags.item-cards-dnd5e.memberBackImage" type="imagevideo"}}
-            <input class="image" type="text" name="flags.item-cards-dnd5e.memberBackImage" data-link-keep
-                    value="{{data.flags.item-cards-dnd5e.memberBackImage}}"/>
+            <file-picker name="flags.item-cards-dnd5e.memberBackImage" type="imagevideo" value="{{item.flags.item-cards-dnd5e.memberBackImage}}"></file-picker>
         </div>
 	</div>
     {{/if}}

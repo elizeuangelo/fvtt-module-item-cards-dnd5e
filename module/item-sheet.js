@@ -1,6 +1,15 @@
 import { PopoutCard } from './card-popout.js';
 import { getSetting } from './settings.js';
 
+export function specialMembership() {
+	try {
+		const membership = getSetting('specialMembership');
+		return Boolean(membership && game.membership?.hasPermissionSync(membership));
+	} catch {
+		return false;
+	}
+}
+
 // Logic
 const section = await getTemplate('modules/item-cards-dnd5e/templates/item-sheet-tab.hbs');
 function addTab(sheet, html, data) {
@@ -27,28 +36,24 @@ function addTab(sheet, html, data) {
 	const menu = $(`<a class="item" data-tab="item-card">Card</a>`);
 	sheet._tabs[0]._nav.appendChild(menu[0]);
 
-	// Tidysheet Fixes
-	if (sheet.constructor.name === 'Tidy5eItemSheet') {
-		tab[0].style.paddingRight = '0.75rem';
-	}
-
 	// Listeners
 	menu.on('click', () => setTimeout(() => sheet.setPosition({ height: 'auto' }), 0));
-	tab.find('input,select,textarea').on('change', () =>
-		Hooks.once('renderItemSheet', () => sheet.element.find('nav [data-tab=item-card]')[0].click())
-	);
-	tab.find('button.file-picker').on('click', (ev) => sheet._activateFilePicker(ev));
+
+	// Adds onSubmit Wrapper
+	if (sheet._cardSubmitWrapper !== true) {
+		sheet._cardSubmitWrapper = true;
+		const onSubmit = sheet._onSubmit;
+		sheet._onSubmit = async function _onSubmitWrapper(event) {
+			const isActiveTab = sheet._tabs[0].active === 'item-card';
+			if (isActiveTab) {
+				Hooks.once('renderItemSheet', () => sheet.element.find('nav [data-tab=item-card]')[0].click());
+			}
+			await onSubmit.call(this, event);
+		};
+	}
+
 	const flipped = sheet.document.getFlag('item-cards-dnd5e', 'flipped');
 	tab.find('#card-preview').on('click', () => PopoutCard.createFromUuid({ uuid: sheet.item.uuid, flipped, preview: true }));
-}
-
-function specialMembership() {
-	try {
-		const membership = getSetting('specialMembership');
-		return Boolean(membership && game.membership?.hasPermissionSync(membership));
-	} catch {
-		return false;
-	}
 }
 
 // -------------------------------- //

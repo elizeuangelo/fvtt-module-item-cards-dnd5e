@@ -1,34 +1,37 @@
 {
-	"id": "item-cards-dnd5e",
-	"title": "Item Cards (dnd5e)",
-	"version": "1.0.0",
-	"compatibility": {
-		"minimum": "11",
-		"verified": "11"
-	},
-	"esmodules": ["main.js"],
-	"styles": ["style.css"],
-	"relationships": {
-		"systems": [
-			{
-				"id": "dnd5e",
-				"type": "system",
-				"compatibility": {
-					"minimum": "3.0.0",
-					"verified": "3.0.3"
-				}
-			}
-		]
-	},
-	"authors": [
-		{
-			"name": "elizeuangelo",
-			"discord": "mad.wizard",
-			"flags": {}
-		}
-	],
-	"socket": true,
-	"url": "https://github.com/elizeuangelo/fvtt-module-item-cards-dnd5e",
-	"manifest": "https://github.com/elizeuangelo/fvtt-module-item-cards-dnd5e/releases/latest/download/module.json",
-	"download": "https://github.com/elizeuangelo/fvtt-module-item-cards-dnd5e/releases/latest/download/module.zip"
+    "id": "item-cards-dnd5e",
+    "title": "Item Cards (dnd5e)",
+    "version": "1.1.0",
+    "compatibility": {
+        "minimum": 12,
+        "verified": "12.331"
+    },
+    "esmodules": [
+        "main.js"
+    ],
+    "styles": [
+        "style.css"
+    ],
+    "relationships": {
+        "systems": [
+            {
+                "id": "dnd5e",
+                "type": "system",
+                "compatibility": {
+                    "minimum": "4.0.4",
+                    "verified": "4.0.4"
+                }
+            }
+        ]
+    },
+    "authors": [
+        {
+            "name": "elizeuangelo",
+            "discord": "mad.wizard"
+        }
+    ],
+    "socket": true,
+    "url": "https://github.com/elizeuangelo/fvtt-module-item-cards-dnd5e",
+    "manifest": "https://github.com/elizeuangelo/fvtt-module-item-cards-dnd5e/releases/latest/download/module.json",
+    "download": "https://github.com/elizeuangelo/fvtt-module-item-cards-dnd5e/releases/latest/download/module.zip"
 }

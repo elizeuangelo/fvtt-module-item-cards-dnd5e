@@ -34,7 +34,7 @@ function defaultCard(item) {
 }
 function defaultOptions(item) {
 	const smallFonts = item.getFlag('item-cards-dnd5e', 'smallerFonts');
-	const titleSize = '' + ~~Math.clamped(24 - item.name.length / 2, 10, 13);
+	const titleSize = '' + ~~Math.clamp(24 - item.name.length / 2, 10, 13);
 	return {
 		foreground_color: 'white',
 		background_color: 'white',

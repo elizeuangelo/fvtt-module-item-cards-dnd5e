@@ -60,8 +60,17 @@ function defaultOptions(item) {
 function firstLetterUpperCase(str) {
 	return str.replace(str[0], str[0].toUpperCase());
 }
-async function removeTags(str) {
-	return await TextEditor.enrichHTML(str.replace(/^<p>(.*)<\/p>$/s, '$1'), { async: true, secrets: true });
+async function formatText(str) {
+	return await TextEditor.enrichHTML(escapePipe(str.replace(/^<p>(.*)<\/p>$/s, '$1')), {
+		async: true,
+		secrets: true,
+	});
+}
+function escapePipe(str) {
+	return str.replaceAll('|', '###124;');
+}
+function unescapePipe(str) {
+	return str.replaceAll('###124;', '|');
 }
 
 async function generateSpell(item) {
@@ -82,7 +91,7 @@ async function generateSpell(item) {
 				: '',
 			'rule',
 			'fill | 2',
-			item.system.description.value ? `text | ${await removeTags(item.system.description.value)}` : '',
+			item.system.description.value ? `text | ${await formatText(item.system.description.value)}` : '',
 			'fill | 3',
 		],
 	};
@@ -111,7 +120,7 @@ async function generateWeapon(item) {
 			item.labels.range && isRanged ? `property | Range | ${item.labels.range}` : '',
 			'rule',
 			'fill | 2',
-			item.system.description.value ? `text | ${await removeTags(item.system.description.value)}` : '',
+			item.system.description.value ? `text | ${await formatText(item.system.description.value)}` : '',
 			'fill | 3',
 		],
 	};
@@ -129,7 +138,7 @@ async function generateArmor(item) {
 			item.system.stealthDisadvantage ? `property | Stealth| Disadvantage` : '',
 			'rule',
 			'fill | 2',
-			item.system.description.value ? `text | ${await removeTags(item.system.description.value)}` : '',
+			item.system.description.value ? `text | ${await formatText(item.system.description.value)}` : '',
 			'fill | 3',
 		],
 	};
@@ -152,7 +161,7 @@ async function generateBasic(item, color = 'dimgray') {
 			item.system.uses?.recovery ? `property | Recovery | ${item.system.uses.recovery}` : '',
 			prop ? 'rule' : '',
 			'fill | 2',
-			item.system.description.value ? `text | ${await removeTags(item.system.description.value)}` : '',
+			item.system.description.value ? `text | ${await formatText(item.system.description.value)}` : '',
 			'fill | 3',
 		],
 	};
@@ -178,7 +187,7 @@ export async function createFrontCard(item) {
 	const card = contents
 		? contentCard(item, contents.split('\n'))
 		: await (CARD_TYPES[item.type]?.(item) ?? generateBasic(item));
-	return card_generate_front(card, options);
+	return unescapePipe(card_generate_front(card, options));
 }
 export async function createBackCard(item) {
 	const options = { ...defaultOptions(item) };
@@ -186,5 +195,5 @@ export async function createBackCard(item) {
 	const card = contents
 		? contentCard(item, contents.split('\n'))
 		: await (CARD_TYPES[item.type]?.(item) ?? generateBasic(item));
-	return card_generate_back(card, options);
+	return unescapePipe(card_generate_back(card, options));
 }
